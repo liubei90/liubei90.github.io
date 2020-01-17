@@ -73,3 +73,6 @@
 
 - new 操作
     会触发get, 获取func的prototype对象，用来关联原型链。之后触发construct。
+
+
+[例子](./proxy_demo.html)
