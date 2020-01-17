@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    var allhandler = {
+      getPrototypeOf: function(target) {
+        var res = Reflect.getPrototypeOf(target);
+        console.log('Proxy.getPrototypeOf', target);
+        return res;
+      },
+      setPrototypeOf: function(target, prototype) {
+        var res = Reflect.setPrototypeOf(target, prototype);
+        console.log('Proxy.setPrototypeOf', target, prototype);
+        return res;
+      },
+      isExtensible: function(target) {
+        var res = Reflect.isExtensible(target);
+        console.log('Proxy.isExtensible', target);
+        return res;
+      },
+      preventExtensions: function(target) {
+        var res = Reflect.preventExtensions(target);
+        console.log('Proxy.preventExtensions', target);
+        return res;
+      },
+      getOwnPropertyDescriptor: function(target, prop) {
+        var res = Reflect.getOwnPropertyDescriptor(target, prop);
+        console.log('Proxy.getOwnPropertyDescriptor', target, prop);
+        return res;
+      },
+      defineProperty: function(target, property, descriptor) {
+        var res = Reflect.defineProperty(target, property, descriptor);
+        console.log('Proxy.defineProperty', target, property, descriptor);
+        return res;
+      },
+      has: function(target, prop) {
+        var res = Reflect.has(target, prop);
+        console.log('Proxy.has', target, prop);
+        return res;
+      },
+      get: function(target, property, receiver) {
+        var res = Reflect.get(target, property, receiver);
+        console.log('Proxy.get', target, property, receiver);
+        return res;
+      },
+      set: function(target, property, value, receiver) {
+        var res = Reflect.set(target, property, value, receiver);
+        console.log('Proxy.set', target, property, value, receiver);
+        return res;
+      },
+      deleteProperty: function(target, property) {
+        var res = Reflect.deleteProperty(target, property);
+        console.log('Proxy.deleteProperty', target, property);
+        return res;
+      },
+      ownKeys: function(target) {
+        var res = Reflect.ownKeys(target);
+        console.log('Proxy.ownKeys', target);
+        return res;
+        // return [];
+      },
+      apply: function(target, thisArg, argumentsList) {
+        var res = Reflect.apply(target, thisArg, argumentsList);
+        console.log('Proxy.apply', target, thisArg, argumentsList);
+        return res;
+      },
+      construct: function(target, argumentsList, newTarget) {
+        var res = Reflect.construct(target, argumentsList, newTarget);
+        console.log('Proxy.construct', target, argumentsList, newTarget);
+        return res;
+      },
+    };
+
+    function getObjectProxy() {
+      var obj = {
+        count: 1,
+      };
+
+      return new Proxy(obj, allhandler);
+    }
+
+    function getArrayProxy() {
+      return new Proxy([1, 2, 3, allhandler]);
+    }
+
+    function getFunctionProxy() {
+      function fn () {}
+      return new Proxy(fn, allhandler);
+    }
+
+    (function () {
+      function getPrototypeOf() {
+        var pro = getObjectProxy();
+        Object.getPrototypeOf(pro);
+        Reflect.getPrototypeOf(pro);
+      }
+      function setPrototypeOf() {
+        var pro = getObjectProxy();
+        Object.setPrototypeOf(pro, null)
+        Reflect.setPrototypeOf(pro, null);
+      }
+      function isExtensible() {
+        var pro = getObjectProxy();
+        Object.isExtensible(pro);
+        Reflect.isExtensible(pro);
+      }
+      function preventExtensions() {
+        var pro = getObjectProxy();
+        Object.preventExtensions(pro);
+        Reflect.preventExtensions(pro);
+      }
+      function getOwnPropertyDescriptor() {
+        var pro = getObjectProxy();
+        Object.getOwnPropertyDescriptor(pro, 'count');
+        Reflect.getOwnPropertyDescriptor(pro, 'count');
+      }
+      function defineProperty() {
+        var pro = getObjectProxy();
+        Object.defineProperty(pro, 'name', {
+          value: 'liu',
+          writable: true
+        });
+        Reflect.defineProperty(pro, 'age', {
+          value: 1,
+          writable: true
+        });
+        // =操作会触发set,在set中触发getOwnPropertyDescriptor，再触发defineProperty
+        pro.age = 2;
+      }
+      function has() {
+        var pro = getObjectProxy();
+        // in
+        'count' in pro;
+
+        // 原型链上的in
+        var subPro = Object.create(pro);
+        'count' in subPro;
+
+        // Reflect.has()
+        Reflect.has(pro, 'count');
+
+        // 不明白
+        // // with检查
+        // with(pro) {
+        //   (count);
+        // }
+      }
+      function get() {
+        var pro = getObjectProxy();
+        pro.count;
+        pro['count'];
+
+        Reflect.get(pro, 'count');
+
+        // 原型链访问, 会引起chrome开发工具崩溃！！！
+        // var subPro = Object.create(pro);
+        // subPro['count'];
+        // console.log(subPro);
+      }
+      function set() {
+        // set操作会触发set,在set中触发getOwnPropertyDescriptor，再触发defineProperty
+        // 猜测引擎内部会先检查属性描述符，做检查
+        var pro = getObjectProxy();
+        pro.count = 2;
+
+        Reflect.set(pro, 'count', 2);
+
+        // 原型链访问, 会引起chrome开发工具崩溃！！！
+        // var subPro = Object.create(pro);
+        // subPro.count = 1;
+      }
+      function deleteProperty() {
+        var pro = getObjectProxy();
+        // 删除存在的属性
+        delete pro.count;
+        // 删除不存在的属性
+        delete pro.name;
+        
+        var pro2 = getObjectProxy();
+        Reflect.deleteProperty(pro2, 'count');
+      }
+      function ownKeys() {
+        var pro = getObjectProxy();
+
+        Object.getOwnPropertyNames(pro);
+        
+        Object.getOwnPropertySymbols(pro);
+        
+        // 该方法触发ownKeys, 之后触发getOwnPropertyDescriptor，
+        // 该方法内部先通过ownKeys拿到所有自身属性，然后拿到每个属性描述符，判断是否可枚举
+        Object.keys(pro);
+        
+        Reflect.ownKeys(pro);
+      }
+      function apply() {
+        var fun = getFunctionProxy();
+        fun();
+        // 由于有个.操作，会先触发get，之后的()操作触发apply
+        fun.apply();
+        // 由于有个.操作，会先触发get，之后的()操作触发apply
+        fun.call();
+      }
+      function construct() {
+        var fun = getFunctionProxy();
+        // new操作会先触发get，获取fun的prototype对象。之后触发construct
+        new fun();
+      }
+
+      [
+        getPrototypeOf,
+        setPrototypeOf,
+        isExtensible,
+        preventExtensions,
+        getOwnPropertyDescriptor,
+        defineProperty,
+        has,
+        get,
+        set,
+        deleteProperty,
+        ownKeys,
+        apply,
+        construct
+      ].forEach(function(func) {
+        func();
+      });
+    })();
+  </script>
+</body>
+</html>

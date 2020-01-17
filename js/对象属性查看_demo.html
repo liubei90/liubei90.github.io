@@ -120,5 +120,17 @@
       });
     })();
   </script>
+  <script>
+    console.log('验证不可枚举自有属性');
+    var ownKey = 'name';
+    var ownValue = 'liu';
+    var unEnumObj = Object.create(null);
+    Object.defineProperty(unEnumObj, ownKey, {
+      enumerable: false,
+      value: ownValue
+    });
+
+    validKeyInObj('unEnumObj', unEnumObj, ownKey);
+  </script>
 </body>
 </html>
