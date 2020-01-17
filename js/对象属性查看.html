@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function validKeyInObj(varName, obj, ownKey) {
+      var usable = [];
+      var unusable = [];
+      // for in
+      var inTheForIn = false;
+      for (let key in obj) {
+        if (key === ownKey) {
+          inTheForIn = true;
+          usable.push('for in');
+          break;
+        }
+      }
+      if (!inTheForIn) {
+        unusable.push('for in');
+      }
+      
+      // Object.keys
+      if (Object.keys(obj).indexOf(ownKey) !== -1) {
+        usable.push('Object.keys');
+      } else {
+        unusable.push('Object.keys');
+      }
+
+      // Reflect.has
+      if (Reflect.has(obj, ownKey)) {
+        usable.push('Reflect.has');
+      } else {
+        unusable.push('Reflect.has');
+      }
+
+      // Object.prototype.hasOwnProperty
+      if (Object.prototype.hasOwnProperty.call(obj, ownKey)) {
+        usable.push('Object.prototype.hasOwnProperty');
+      } else {
+        unusable.push('Object.prototype.hasOwnProperty');
+      }
+
+      // Object.getOwnPropertyNames
+      if (Object.getOwnPropertyNames(obj).indexOf(ownKey) !== -1) {
+        usable.push('Object.getOwnPropertyNames');
+      } else {
+        unusable.push('Object.getOwnPropertyNames');
+      }
+
+      // Object.getOwnPropertyDescriptor
+      var ownKeyDescriptor = Object.getOwnPropertyDescriptor(obj, ownKey);
+      if (ownKeyDescriptor) {
+        usable.push('Object.getOwnPropertyDescriptor');
+      } else {
+        unusable.push('Object.getOwnPropertyDescriptor');
+      }
+      console.log(varName, usable);
+      console.log(varName, unusable);
+    }
+
+    function validForOf(varName, key, value, obj) {
+      // for of只能用在iterable上
+      // for of
+      for (let v of obj) {
+        if (v === value) {
+          cosnole.log(varName, 'for of');
+          break;
+        }
+      }
+    }
+  </script>
+  <script>
+    (function () {
+      console.log('验证对象的自有属性');
+      var ownKey = 'name';
+      var ownValue = 'liu';
+      var plainObj = {
+        [ownKey]: ownValue
+      };
+      var plainObjNullPrototype = Object.create(null);
+      plainObjNullPrototype[ownKey] = ownValue;
+      [
+        { varName: 'plainObj', obj: plainObj },
+        { varName: 'plainObjNullPrototype', obj: plainObjNullPrototype },
+      ].forEach(function({ varName, obj }) {
+        validKeyInObj(varName, obj, ownKey);
+        // validForOf(varName, ownKey, ownValue, obj);
+      });
+    })();
+  </script>
+
+  <script>
+    (function() {
+      console.log('验证对象原型链上的属性');
+      var ownKey = 'name';
+      var ownValue = 'liu';
+      var prototypeObj = Object.create(null);
+      prototypeObj[ownKey] = ownValue;
+
+      function Ctor() {}
+      Ctor.prototype = prototypeObj;
+
+      var pobjByObjectCreate = Object.create(prototypeObj);
+      var pobjByFunction = new Ctor();
+      var pobjBysetPrototypeOf = {};
+      Object.setPrototypeOf(pobjBysetPrototypeOf, prototypeObj);
+
+      [
+        { varName: 'pobjByObjectCreate', obj: pobjByObjectCreate },
+        { varName: 'pobjByFunction', obj: pobjByFunction },
+        { varName: 'pobjBysetPrototypeOf', obj: pobjBysetPrototypeOf },
+      ].forEach(function({ varName, obj }) {
+        validKeyInObj(varName, obj, ownKey);
+        // validForOf(varName, ownKey, ownValue, obj);
+      });
+    })();
+  </script>
+</body>
+</html>
