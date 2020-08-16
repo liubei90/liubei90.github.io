@@ -1,0 +1,72 @@
+{
+  "query":{
+    "bool":{
+      "must":[
+        {{#currency}}
+        {
+          "term": {
+            "currency": {
+              "value":"{{currency}}"
+            }
+          }
+        },
+        {{/currency}}
+        {{#products}}
+        {
+          "nested":{
+            "path":"products",
+            "query":{
+              "bool":{
+                "must":[
+                  {{#products.base_price}}
+                  {
+                    "term":{
+                      "products.base_price":{
+                        "value":{{products.base_price}}
+                      }
+                    }
+                  },
+                  {{/products.base_price}}
+                  {{#products.category}}
+                  {
+                    "match":{
+                      "products.category":"{{products.category}}"
+                    }
+                  },
+                  {{/products.category}}
+                  { "match_all": {} }
+                ]
+              }
+            }
+          }
+        },
+        {{/products}}
+        {{#geoip}}
+        {
+          "nested": {
+            "path":"geoip",
+            "query":{
+              "bool":{
+                "must":[
+                  {{#geoip.country_iso_code}}
+                  {
+                    "term":{
+                      "geoip.country_iso_code":{
+                        "value":"{{geoip.country_iso_code}}"
+                      }
+                    }
+                  },
+                  {{/geoip.country_iso_code}}
+                  { "match_all": {} }
+                ]
+              }
+            }
+          }
+        },
+        {{/geoip}}
+        {{!使用match_all解决最后一个逗号问题}}
+        { "match_all": {} }
+      ]
+    }
+  }
+}
