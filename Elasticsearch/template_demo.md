@@ -4,6 +4,32 @@
 
 // params
 {
+  id,
+  name: [],
+  supplier_status: {
+    value: '',
+    array_value: [],
+    is_array: true
+  },
+  ...
+  d_supplier_property_status: {
+    field1,
+    field2
+  }
+}
+
+{
+  id,
+  name: [],
+  supplier_status: [],
+  ...
+  d_supplier_property_status: {
+    field1,
+    field2
+  }
+}
+
+{
   "category.keyword": ["Women's Shoes", "Women's Clothing"]
 }
 
