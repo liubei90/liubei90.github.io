@@ -1,0 +1,124 @@
+<!--
+ * @Author: liubei
+ * @Date: 2021-08-02 17:56:48
+ * @LastEditTime: 2021-08-02 18:34:59
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        (function () {
+            var obj = {
+                count: 1,
+            };
+
+            var p = new Proxy(obj, {
+                has: function (target, prop) {
+                    var res = Reflect.has(target, prop);
+                    console.log('Proxy.has', prop, target === obj);
+                    return res;
+                },
+            });
+
+            'count' in p; // Proxy.has Object count
+
+            var subP = Object.create(p);
+            'count' in subP; // 
+
+            Reflect.has(p, 'count');
+
+            with (p) {
+                (count);
+            }
+        });
+
+    </script>
+
+    <script>
+        (function () {
+            var obj = {
+                count: 1,
+            };
+
+            var p = new Proxy(obj, {
+                get: function (target, property, receiver) {
+                    if (property == 'count') {
+                        var res = Reflect.get(target, property, receiver);
+                        console.log('Proxy.get', target, property, receiver);
+                        return res;
+                    }
+
+                    return Reflect.get(target, property, receiver);
+                },
+            });
+
+            p.count; // Proxy.get obj count p
+            p['count']; // Proxy.get obj count p
+            Reflect.get(p, 'count'); // Proxy.get obj count p
+
+            var subP = Object.create(p);
+            subP['count']; // Proxy.get obj count subP
+        });
+
+    </script>
+
+    <script>
+        (function () {
+            var obj = {
+                count: 1,
+            };
+
+            var p = new Proxy(obj, {
+                set: function (target, property, value, receiver) {
+                    if (property == 'count') {
+                        console.log('Proxy.set', target, property, value, receiver);
+                        var res = Reflect.set(target, property, value, receiver);
+                        return res;
+                    }
+
+                    return Reflect.set(target, property, receiver);
+                },
+            });
+
+            p.count = 2; // Proxy.set obj count 2 p
+            p['count'] = 3; // Proxy.set obj count 3 p
+            Reflect.set(p, 'count', 4); // Proxy.set obj count 4 p
+
+            var subP = Object.create(p);
+            subP['count'] = 5; // Proxy.set obj count 5 subP
+            subP['count'] = 6; // <无输出>
+        });
+
+    </script>
+
+    <script>
+        (function () {
+            function fn() { }
+
+            var pfn = new Proxy(fn, {
+                apply: function (target, thisArg, argumentsList) {
+                    console.log('Proxy.apply', target, thisArg, argumentsList);
+                    var res = Reflect.apply(target, thisArg, argumentsList);
+                    return res;
+                },
+            });
+
+            pfn(1); // Proxy.apply fn undefined [1]
+            pfn.apply({}, [2]); // Proxy.apply fn {} [2]
+            pfn.call({}, 3); // Proxy.apply fn {} [3]
+
+        })();
+
+    </script>
+</body>
+
+</html>
