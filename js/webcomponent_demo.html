@@ -1,0 +1,136 @@
+<!--
+ * @Author: liubei
+ * @Date: 2021-08-15 09:04:11
+ * @LastEditTime: 2021-08-15 17:02:04
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- custom elements -->
+    <div>
+        <autonomous-elm></autonomous-elm>
+        <input is="build-in-elm" />
+    </div>
+    <script>
+        (function () {
+
+            customElements.define('autonomous-elm', class extends HTMLElement {
+                constructor() {
+                    super();
+                }
+            });
+
+            customElements.define('build-in-elm', class extends HTMLInputElement {
+                constructor() {
+                    super();
+
+                    this.placeholder = '自定义占位符';
+                }
+
+                static get observedAttributes() { return ['l']; }
+
+                connectedCallback() { console.log('connectedCallback'); }
+
+                disconnectedCallback() { console.log('disconnectedCallback'); }
+
+                adoptedCallback() { console.log('adoptedCallback'); }
+
+                attributeChangedCallback() { console.log('attributeChangedCallback'); }
+            }, { extends: 'input' });
+
+
+            setTimeout(function () {
+                var ipt = document.querySelector('input');
+                ipt.setAttribute('l', '23333');
+            }, 1000);
+
+            setTimeout(function () {
+                var ipt = document.querySelector('input');
+                ipt.parentElement.removeChild(ipt);
+            }, 2000);
+        })();
+    </script>
+
+    <!-- 在 customElements.define 调用之后使用, parentNode 获取失败，原因是构建 custom elements 时，父元素还没准备好 -->
+    <!-- <div>
+    <autonomous-elm ></autonomous-elm>
+</div> -->
+
+    <!-- shadow DOM -->
+    <div id="shadowhost">这是一个链接</div>
+    <script>
+        (function () {
+            function attachShadow(host) {
+                var shadow = host.attachShadow({ mode: 'closed' });
+                var a = document.createElement('a');
+
+                a.innerText = host.textContent;
+                a.href = 'https://www.baidu.com';
+
+                shadow.append(a);
+            };
+
+            attachShadow(document.querySelector('#shadowhost'));
+        });
+    </script>
+
+    <!-- templates and slots -->
+    <template id="tmp_a">
+        <a href="https://www.baidu.com">这是一个链接</a>
+    </template>
+    <div id="tmp_container"></div>
+    <script>
+        (function () {
+            function attachShadow(host) {
+                var shadow = host.attachShadow({ mode: 'closed' });
+                var tmp = document.querySelector('#tmp_a');
+
+                shadow.append(tmp.content.cloneNode(true));
+            };
+
+            attachShadow(document.querySelector('#tmp_container'));
+        });
+    </script>
+
+    <!-- web components -->
+    <template id="tmp_frame">
+        <head>
+            <slot name="head">default head</slot>
+        </head>
+        <main>
+            <slot name="main">default main</slot>
+        </main>
+        <footer>
+            <slot name="footer">default footer</slot>
+        </footer>
+    </template>
+    <div is="app-frame">
+        <div slot="head">app1 head</div>
+        <div slot="main">app1 content</div>
+        <div slot="footer">app1 footer</div>
+    </div>
+    <script>
+        (function () {
+            customElements.define('app-frame', class extends HTMLDivElement {
+                constructor() {
+                    super();
+
+                    var tmp = document.querySelector('#tmp_frame').content;
+
+                    this.attachShadow({ mode: 'closed' }).append(tmp.cloneNode(true));
+                }
+            }, {extends: 'div'});
+        })();
+    </script>
+</body>
+
+</html>

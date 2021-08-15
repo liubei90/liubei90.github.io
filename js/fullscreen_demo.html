@@ -1,0 +1,88 @@
+<!--
+ * @Author: liubei
+ * @Date: 2021-08-13 16:27:33
+ * @LastEditTime: 2021-08-13 17:50:27
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #fullscreenelm:fullscreen {
+            background-color: #fff;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="fullscreenelm">
+        <div>需要全屏的元素</div>
+        <button id="optbtn">全屏/退出</button>
+    </div>
+
+    <script>
+        function requestFullscreen(element) {
+            const fullScreen = element.requestFullscreen || element.mozRequestFullScreen || element.msRequestFullscreen || element.webkitRequestFullscreen;
+
+            if (fullScreen) {
+                fullScreen.call(element);
+                inFullscreen = true;
+            }
+        }
+
+        function exitFullscreen() {
+            const exit = document.exitFullscreen || document.msExitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen;
+
+            if (exit) {
+                exit.call(document);
+            }
+        };
+    </script>
+
+    <script>
+        (function() {
+            var optbtn = document.querySelector('#optbtn');
+            var fullscreenelm = document.querySelector('#fullscreenelm');
+
+            optbtn.addEventListener('click', function() {
+                if (document.fullscreenElement) {
+                    exitFullscreen();
+                } else {
+                    requestFullscreen(fullscreenelm);
+                }
+            });
+
+            fullscreenelm.onfullscreenchange = function(e) {
+                console.log('fullscreenelm fullscreenchange', e, document.fullscreenElement);
+            };
+
+            fullscreenelm.onfullscreenerror = function(e) {
+                console.log('fullscreenelm fullscreenerror', e, document.fullscreenElement);
+            };
+
+            document.onfullscreenchange = function(e) {
+                console.log('document fullscreenchange', e, document.fullscreenElement);
+            };
+
+            document.onfullscreenerror = function(e) {
+                console.log('document fullscreenerror', e, document.fullscreenElement);
+            };
+
+            // requestFullscreen(fullscreenelm); // 
+
+            setTimeout(function() {
+                console.log(document.fullscreenElement);
+            }, 7000);
+        })();
+    </script>
+</body>
+
+</html>
