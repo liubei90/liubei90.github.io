@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 同步 -->
+    <!-- <script>
+        console.log('hello, script');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded');
+        });
+
+        window.addEventListener('load', function() {
+            console.log('load');
+        });
+    </script>
+
+    <div>hello, </div>
+    <script src="/async.js?timeout=0"></script>
+    <div>world</div>
+
+    <script>
+        console.log('end, script');
+    </script> -->
+
+    <!-- defer async -->
+    <script>
+        console.log('hello, script');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded');
+        });
+
+        window.addEventListener('load', function() {
+            console.log('load');
+        });
+    </script>
+
+    <script src="/async.js?timeout=5" async></script>
+    <script src="/defer.js?timeout=3" defer></script>
+
+    <script>
+        console.log('end, script');
+    </script>
+
+
+    <!-- <div>first div</div>
+    <img src="/timeout.png" />
+    <script>
+        console.log('hello, script'); // 先被中断，再输出 hello, script
+        // alert('中断1'); // 中断1
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded');
+        });
+
+        window.addEventListener('load', function() {
+            console.log('load');
+        });
+    </script>
+
+    <div>hello, html</div>
+
+    <script>
+        // alert('中断2');
+    </script>
+
+    <script src="/async.js" async></script>
+    <script src="/defer.js" defer></script>
+
+    <div>come on!!!</div>
+
+    <script>
+        // alert('中断3');
+        console.log('end, script');
+
+        setTimeout(function() {
+            // alert('中断4');
+        }, 0);
+    </script> -->
+</body>
+</html>
