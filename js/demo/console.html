@@ -1,0 +1,64 @@
+<!--
+ * @Author: liubei
+ * @Date: 2021-08-18 17:53:34
+ * @LastEditTime: 2021-08-19 10:04:15
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="container"></div>
+    <script>
+        var container = document.querySelector('#container');
+        var count = 1;
+        function time() {
+            for (var i = 0; i < 10; i++) {
+                count += i;
+            };
+
+            container.textContent = count;
+        }
+    </script>
+    <script>
+        (function () {
+            function rafTime() {
+                time();
+                requestAnimationFrame(rafTime);
+            }
+
+            // 每一帧的最后时刻，会执行渲染任务
+            // requestAnimationFrame 会作为渲染任务的一部分被处理
+            requestAnimationFrame(rafTime);
+
+            var test = 0;
+            setInterval(function interval() {
+                var cc = 0;
+                for (var i = 0; i < 100000; i++) {
+                    cc += 1;
+                }
+
+                test = cc;
+            }, 1000);
+
+            console.log(test);
+        });
+    </script>
+
+    <script>
+        (function () {
+            // 每一帧会执行4次time函数，
+            // 只有第一次会执行Schedule Style Recalculation
+            setInterval(time, 0);
+        })();
+    </script>
+</body>
+
+</html>

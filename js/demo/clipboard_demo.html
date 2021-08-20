@@ -1,0 +1,102 @@
+<!--
+ * @Author: liubei
+ * @Date: 2021-08-16 10:54:27
+ * @LastEditTime: 2021-08-16 14:33:15
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .editable {
+            width: 90%;
+            height: 400px;
+            padding: 15px;
+            border: 1px solid gray;
+            overflow: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 浏览器 paste 应用 -->
+    <div class="editable" contenteditable="true"></div>
+
+    <!-- 拦截浏览器 paste 应用 -->
+    <div id="editContainer" class="editable" contenteditable="true"></div>
+    <script>
+        (function () {
+            function getClipboardContent() {
+                return navigator.permissions.query({ name: "clipboard-read" }).then(result => {
+
+                    if (result.state == "granted" || result.state == "prompt") {
+                        return navigator.clipboard.read().then(res => {
+                            console.log(res);
+                            var tasks = [];
+
+                            console.log(res);
+
+                            if (Array.isArray(res) && res.length) {
+                                for (var i = 0; i < res.length; i++) {
+                                    var clipboardItem = res[i];
+                                    var types = clipboardItem.types || [];
+
+                                    // 拷贝的图片
+                                    var imgtype = types.filter(tp => tp.indexOf('image') === 0)[0];
+                                    if (imgtype) {
+                                        tasks.push(clipboardItem.getType(imgtype).then(imgBlob => {
+                                            // 执行上传操作;
+                                            return '<img src="' + URL.createObjectURL(imgBlob) + '" />'
+                                        }));
+                                        continue;
+                                    }
+
+                                    // 拷贝的富文本
+                                    if (types.filter(tp => tp === 'text/html').length) {
+                                        tasks.push(clipboardItem.getType('text/html').then(bt => bt.text()));
+                                        continue;
+                                    }
+
+                                    // 拷贝的纯文本
+                                    if (types.filter(tp => tp === 'text/plain').length) {
+                                        tasks.push(clipboardItem.getType('text/plain').then(bt => bt.text()));
+                                        continue;
+                                    }
+                                };
+
+                            }
+
+                            return Promise.allSettled(tasks).then(resList => {
+                                return resList.filter(item => item.status == 'fulfilled').map(item => item.value).join('');
+                            });
+                        });
+                    }
+
+                    throw Error('读取粘贴板权限被禁用！');
+                });
+
+            }
+
+            var editContainer = document.querySelector('#editContainer');
+
+            editContainer.addEventListener('paste', function (e) {
+                console.log(e);
+                // 阻止默认粘贴行为
+                e.preventDefault();
+                getClipboardContent().then((t) => {
+                    editContainer.innerHTML += t;
+                }).catch(err => {
+                    console.error(err);
+                });
+            });
+        })();
+    </script>
+
+</body>
+
+</html>
