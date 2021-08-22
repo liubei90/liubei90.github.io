@@ -1,7 +1,7 @@
 <!--
  * @Author: liubei
  * @Date: 2021-08-19 15:08:36
- * @LastEditTime: 2021-08-19 16:47:08
+ * @LastEditTime: 2021-08-20 17:43:32
  * @Description: 
 -->
 <!DOCTYPE html>
@@ -11,10 +11,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!-- logo.svg在public文件夹中，通过根路径 / 访问 -->
+    <!-- build构建后，会将public文件内容拷贝到根目录下 -->
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link rel="stylesheet" href="./src/styles/index.css">
+
+    <style>
+        .plaid-bk {
+            width: 164px;
+            height: 36px;
+            /* build构建后，不会变化 */
+            background-image: url('./src/assets/plaid.svg');
+        }
+    </style>
 </head>
 <body>
+    <!-- build构建后，<img src="/assets/plaid.10559d73.svg" alt=""> -->
+    <!-- 说明build构建，会重写相对导入的资源的url，绝对导入的不会修改 -->
+    <img src="./src/assets/plaid.svg" alt="">
+    <img src="/assets/plaid.svg" alt="">
+    <img id="plaid-img" alt="">
     <div id="app"></div>
+    <div class="plaid-bk"></div>
+    <div class="plaid-bk-in-css-file"></div>
 
-    <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/index.js"></script>
 </body>
 </html>

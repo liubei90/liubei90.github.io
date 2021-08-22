@@ -6,5 +6,12 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview"
+  },
+  "dependencies": {
+    "marked": "^3.0.0",
+    "qs": "^6.10.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-legacy": "^1.5.1"
   }
 }

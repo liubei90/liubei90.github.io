@@ -1,0 +1,8 @@
+.plaid-bk-in-css-file {
+    width: 164px;
+    height: 36px;
+    /* 开发时 background-image: url('/src/assets/plaid.svg'); */
+    /* build 构建后 background-image: url('/assets/plaid.10559d73.svg'); */
+    /* 说明Vite会处理css文件中的url导入 */
+    background-image: url('/foo/assets/plaid.10559d73.svg');
+}
