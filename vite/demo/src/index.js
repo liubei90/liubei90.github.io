@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-08-19 16:46:46
- * @LastEditTime: 2021-08-20 17:50:09
+ * @LastEditTime: 2021-08-22 16:31:38
  * @Description: 
  */
 
@@ -18,6 +18,8 @@ import { fetchArticles, fetchArticleById } from './api/article.js';
 // 在html中引入相同的图片，构建后的资源url相同
 import plaidImgUrl from './assets/plaid.svg';
 
+// console.log(plaidImgUrl);
+
 
 document.addEventListener('DOMContentLoaded', function() {
     pageInit();
@@ -26,10 +28,10 @@ document.addEventListener('DOMContentLoaded', function() {
 /**
  * 页面初始化
  */
-function pageInit() {
+function pageInit(newModule) {
     const app = document.querySelector('#app');
 
-    fetchArticles().then(artList => {
+    (newModule && newModule.fetchArticles || fetchArticles)().then(artList => {
         const artUl = document.createElement('ul');
 
         artList.forEach(art => {
@@ -56,4 +58,13 @@ function createArticleItem(art) {
     liElm.appendChild(aElm);
 
     return liElm;
+}
+
+// hmr：修改index.js， 会触发一个 {type: "full-reload"} 事件，导致整个页面被刷新
+// hmr：加入hmr代码后，修改index.js，ws会接受到如下事件
+// {"type":"update","updates":[{"type":"js-update","timestamp":1629619057925,"path":"/src/index.js","acceptedPath":"/src/index.js"}]}
+
+if (import.meta.hot) {
+    // import.meta.hot.accept('./api/article.js', pageInit);
+    // import.meta.hot.decline();
 }
