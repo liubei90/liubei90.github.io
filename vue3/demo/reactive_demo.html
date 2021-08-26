@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="./reactivity.global.js"></script>
+    <script> const { reactive, effect } = VueReactivity;</script>
+
+    <script>
+        (function () {
+            const p = reactive([1, 2, 3]);
+
+            effect(function () {
+                console.log(p.indexOf(1));
+            }, {
+                onTrack: function (e) {
+                    console.log('onTrack', e);
+                },
+                onTrigger: function (e) {
+                    console.log('onTrigger', e);
+                },
+            });
+
+            p[0] = 10;
+            p[4] = 5;
+        });
+    </script>
+
+    <script>
+        (function () {
+            var p = reactive({ count: 1 });
+
+            effect(function () {
+                // 对 count 属性的追踪，响应 TriggerOpTypes.SET 操作
+                console.log(p.count);
+
+                // // 对 ITERATE_KEY 的追踪，不响应 TriggerOpTypes.SET 操作
+                console.log(Object.keys(p));
+            });
+
+            // 对 count 属性赋值，会触发 TriggerOpTypes.SET 类型
+            p.count = 2; // 2
+
+
+            // effect(function () {
+            //     // // 对 newprop 属性的追踪，响应 TriggerOpTypes.ADD 操作
+            //     console.log(p.newprop);
+
+            //     // // 对 ITERATE_KEY 的追踪，响应 TriggerOpTypes.ADD 操作
+            //     console.log(Object.keys(p));
+            // });
+
+            // // 对 p 新增属性，会触发 TriggerOpTypes.ADD 类型，由于newprop属性没有被追踪，不会触发effect的执行
+            // p.newprop = 'hello'; // 无输出
+
+
+            // var parr = reactive([1, 2, 3]);
+
+            // effect(function () {
+            //     // 对 0 下标的追踪，响应 TriggerOpTypes.SET 操作，不响应 TriggerOpTypes.ADD 操作
+            //     // console.log(parr[0]);
+
+            //     // 对 length 的追踪，响应 TriggerOpTypes.SET 操作，响应 TriggerOpTypes.ADD 操作
+            //     console.log(parr.length);
+            // }, {
+            //     onTrack: function (e) {
+            //         console.log('onTrack', e);
+            //     },
+            //     onTrigger: function (e) {
+            //         console.log('onTrigger', e);
+            //     },
+            // });
+
+            // // 对数组的0索引赋值, 索引0小于数组的长度，会触发 TriggerOpTypes.SET
+            // parr[0] = 2; // 2
+            // // 索引3等于数组的长度，会触发 TriggerOpTypes.ADD
+            // parr[3] = 4; // 无输出
+
+        })();
+    </script>
+
+    <script>
+        (function () {
+            // var p = reactive({ count: 1 });
+
+            // effect(function () {
+            //     console.log(p.count);
+
+            //     console.log(Object.keys(p));
+            // }, {
+            //     onTrack: function (e) {
+            //         console.log('onTrack', e);
+            //     },
+            //     onTrigger: function (e) {
+            //         console.log('onTrigger', e);
+            //     },
+            // });
+
+            // delete p['count'];
+            // // Reflect.deleteProperty(p, 'count');
+
+
+            var parr = reactive([0, 1, 2]);
+
+            effect(function () {
+                // 对 count 属性的追踪，响应 TriggerOpTypes.DELETE 操作
+                console.log(parr[0]);
+
+                // 对 length 的追踪，响应 TriggerOpTypes.DELETE 操作
+                // console.log(parr.length);
+                for (let i in parr) { }
+            }, {
+                onTrack: function (e) {
+                    console.log('onTrack', e);
+                },
+                onTrigger: function (e) {
+                    console.log('onTrigger', e);
+                },
+            });
+
+            delete parr[0];
+        });
+    </script>
+</body>
+
+</html>

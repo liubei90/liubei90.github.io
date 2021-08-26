@@ -77,10 +77,10 @@
       },
     };
 
-    function getObjectProxy() {
-      var obj = {
+    function getObjectProxy(isarr) {
+      var obj = !isarr ? {
         count: 1,
-      };
+      } : [1, 2, 3];
 
       return new Proxy(obj, allhandler);
     }
@@ -146,10 +146,10 @@
         Reflect.has(pro, 'count');
 
         // 不明白
-        // // with检查
-        // with(pro) {
-        //   (count);
-        // }
+        // with检查
+        with(pro) {
+          (count);
+        }
       }
       function get() {
         var pro = getObjectProxy();
@@ -195,8 +195,17 @@
         // 该方法触发ownKeys, 之后触发getOwnPropertyDescriptor，
         // 该方法内部先通过ownKeys拿到所有自身属性，然后拿到每个属性描述符，判断是否可枚举
         Object.keys(pro);
-        
+
         Reflect.ownKeys(pro);
+
+        var pro = getObjectProxy(true);
+        // in 会触发 ownKeys，之后触发getPrototypeOf，getOwnPropertyDescriptor
+        for (let v in pro) {
+        }
+
+        // of 是通过 get 获取 Symbol.iterator
+        // for (let v of pro) {
+        // }
       }
       function apply() {
         var fun = getFunctionProxy();
@@ -219,11 +228,11 @@
         // preventExtensions,
         // getOwnPropertyDescriptor,
         // defineProperty,
-        has,
+        // has,
         // get,
         // set,
         // deleteProperty,
-        // ownKeys,
+        ownKeys,
         // apply,
         // construct
       ].forEach(function(func) {
