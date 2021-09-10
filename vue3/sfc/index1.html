@@ -1,0 +1,51 @@
+<!--
+ * @Author: liubei
+ * @Date: 2021-09-09 17:25:17
+ * @LastEditTime: 2021-09-09 18:13:49
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script src="./js/systemjs-6.10.3/system.js"></script>
+    <!-- <script src="./js/systemjs-babel-0.3.1/systemjs-babel.js"></script> -->
+    <script>
+        function isVue(url) {
+          return (url + "").indexOf(".vue") > -1;
+        }
+
+        System.constructor.prototype.shouldFetch = function () {
+            return true;
+        };
+
+        var oldFetch = System.constructor.prototype.fetch;
+    
+        System.constructor.prototype.fetch = function(url, options) {
+          return oldFetch(url, options).then(function (res) {
+            if (!isVue(res.url)) {
+                return res;
+            }
+    
+            return res.text().then(function(t) {
+                return new Response(
+                    new Blob(['console.log('+ JSON.stringify(t) +')'], { type: "application/javascript" })
+                );
+            });
+          });
+        }
+    </script>
+    <script >
+        System.import('./main.vue').then(function(m) {
+            console.log(m);
+        });
+    </script>
+</body>
+</html>

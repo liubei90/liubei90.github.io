@@ -1,7 +1,7 @@
 <!--
  * @Author: liubei
  * @Date: 2021-08-03 10:45:58
- * @LastEditTime: 2021-08-03 19:55:09
+ * @LastEditTime: 2021-09-07 10:46:44
  * @Description: 
 -->
 <!DOCTYPE html>
@@ -123,13 +123,30 @@
                 console.log(err.name); // URIError
                 console.log(err.message); // URI malformed
                 console.error(err); // error_demo.html:125 URIError: URI malformed
-                                    // at decodeURIComponent (<anonymous>)
-                                    // at error_demo.html:121
-                                    // at error_demo.html:130
+                // at decodeURIComponent (<anonymous>)
+                // at error_demo.html:121
+                // at error_demo.html:130
             }
 
-        })();
+        });
     </script>
+
+    <script>
+        function throws() { throw '!' }
+        let x = throws()
+    </script>
+    <script>
+        console.log(typeof x)
+    </script>
+    <script>
+        let x
+    </script>
+
+    <script>
+        x = 1;
+        x;
+    </script>
+
 </body>
 
 </html>

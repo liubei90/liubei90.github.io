@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script>
+        var process = {
+            platform: 'win32',
+            env: {},
+        }
+    </script>
+    <script src="./js/hash-sum.js"></script>
+    <script src="./js/vue3/compiler-sfc.global.js"></script>
+    <script src="./js/systemjs-6.10.3/system.js"></script>
+    <script src="./js/systemjs-vue-0.0.1.js"></script>
+    <script src="./js/systemjs-babel-0.3.1/systemjs-babel.js"></script>
+
+    <script src="./js/vue3/vue.global.js"></script>
+    <script type="systemjs-importmap">
+        {
+          "imports": {
+            "vue": "app:vue"
+          }
+        }
+    </script>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        System.set('app:vue', Vue);
+        System.import('./main.vue').then(function(m) {
+            var app = Vue.createApp(m.default).mount('#app');
+        });
+    </script>
+</body>
+</html>
