@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-08-20 13:42:54
- * @LastEditTime: 2021-08-23 11:35:58
+ * @LastEditTime: 2021-09-11 17:23:17
  * @Description: 
  */
 import legacy from '@vitejs/plugin-legacy'
@@ -23,7 +23,8 @@ module.exports = defineConfig({
         rollupOptions: {
             input: {
                 index: resolve(__dirname, 'index.html'),
-                article: resolve(__dirname, 'article.html')
+                article: resolve(__dirname, 'article.html'),
+                query: resolve(__dirname, 'query.html'),
             }
         },
     },

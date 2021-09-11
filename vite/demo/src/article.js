@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-08-20 11:14:39
- * @LastEditTime: 2021-08-20 14:42:45
+ * @LastEditTime: 2021-09-11 18:02:31
  * @Description: 
  */
 
@@ -20,6 +20,8 @@
 
 import marked from 'marked';
 import * as qs from 'qs';
+
+import './styles/index.css';
 
 
 import { fetchArticleById } from './api/article.js';

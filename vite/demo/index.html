@@ -1,7 +1,7 @@
 <!--
  * @Author: liubei
  * @Date: 2021-08-19 15:08:36
- * @LastEditTime: 2021-08-20 17:43:32
+ * @LastEditTime: 2021-09-11 15:22:03
  * @Description: 
 -->
 <!DOCTYPE html>
@@ -29,7 +29,10 @@
     <!-- build构建后，<img src="/assets/plaid.10559d73.svg" alt=""> -->
     <!-- 说明build构建，会重写相对导入的资源的url，绝对导入的不会修改 -->
     <img src="./src/assets/plaid.svg" alt="">
+    <!-- 这种写法有误，开发服务器根目录下没有 /assets/plaid.svg 文件，所有图片展示不出来 -->
     <img src="/assets/plaid.svg" alt="">
+    <!-- 相较于上个图片的src，由于开发服务器根目录下存在 /src/assets/plaid.svg 文件，所有能正常展示 -->
+    <img src="/src/assets/plaid.svg" alt="">
     <img id="plaid-img" alt="">
     <div id="app"></div>
     <div class="plaid-bk"></div>
