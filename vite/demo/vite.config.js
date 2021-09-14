@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-08-20 13:42:54
- * @LastEditTime: 2021-09-11 17:23:17
+ * @LastEditTime: 2021-09-13 16:49:32
  * @Description: 
  */
 import legacy from '@vitejs/plugin-legacy'
@@ -17,6 +17,16 @@ module.exports = defineConfig({
         //     targets: ['defaults', 'not IE 11']
         // })
         vue(),
+        {
+            resolveId(id) {
+                if (id == 'virtual-test') { return id; }
+            },
+            load(id, ssr) {
+                if (id == 'virtual-test') {
+                    return `console.log(${JSON.stringify(id)}); export default ${JSON.stringify(id)}`;
+                };
+            },
+        }
     ],
     build: {
         minify: false,

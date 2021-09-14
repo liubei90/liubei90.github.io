@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <script type="module">
+        // import.meta.glob 被转换为模块的动态导入
+        // { "./src/api/article.js": () => import("/src/api/article.js"),}
+        import.meta.glob('./src/api/**/*')
+
+    </script> -->
+
+    <!-- <script type="module">
+        // import.meta.hot 被识别出来，表示该文件为 hmr 边界。在文件头添加如下导入语句，初始化 import.meta.hot 对象
+        // import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/normalize-url.html?html-proxy&index=0.js");
+        import.meta.hot.accept((m) => { console.log(m) });
+
+    </script> -->
+
+    <!-- <script type="module">
+        // import.meta.env 被识别出来，在文件头注入 env 对象
+        // import.meta.env = {"BASE_URL":"/","MODE":"development","DEV":true,"PROD":false,"SSR":false};
+        console.log(import.meta.env);
+    </script> -->
+
+    <!-- <script type="module">
+        // 导入文件在服务器根目录外部时，url 添加 /@fs/ 前缀。
+        // import { add } from '/@fs/C:/Users/10210/github/liubei/liubei90.github.io/vite/test.js'
+        import { add } from '../test.js'
+
+        console.log(add(1, 2));
+    </script> -->
+
+    <!-- <script type="module">
+        // 将 url 转换为就绝对路径
+        // import { add } from '/test.js'
+        import { add } from './test.js'
+
+        console.log(add(1, 2));
+    </script> -->
+
+    <!-- <script type="module">
+        // 导入非 js 或 css 类型文件时，添加 import 查询参数，为后续处理做标识
+        // import User from '/src/user.json?import'
+        import User from './src/user.json'
+
+        console.log(User);
+    </script> -->
+
+    <!-- <script type="module">
+        // 通过插件实现的虚拟模块，url 添加 /@id/ 前缀
+        // import vt from '/@id/virtual-test'
+        import vt from 'virtual-test'
+
+        console.log(vt);
+    </script> -->
+
+    <!-- <script type="module">
+        // 设置 base 为 foo，将处理过的 url 添加 base 前缀
+        // import { add } from '/foo/test.js'
+        import { add } from './test.js'
+
+        console.log(add(1, 2));
+    </script> -->
+
+    <!-- <script type="module">
+        // 裸导入，将 url 转换为 /node_modules/ 中预构建缓存地址（预构建缓存是否存在不做校验）
+        // import marked from '/node_modules/.vite/marked.js?v=fc6436e4'
+        import marked from 'marked'
+
+        // 裸导入为 cjs 格式时，将 url 转换为如下特殊的导入格式
+        // 命名空间导入
+        // import __vite__cjsImport1_qs from "/node_modules/.vite/qs.js?v=fc6436e4"; const qs = __vite__cjsImport1_qs
+        import * as qs from 'qs'
+        // default 导入
+        // import __vite__cjsImport2_qs from "/node_modules/.vite/qs.js?v=fc6436e4"; const qsdef = __vite__cjsImport2_qs.__esModule ? __vite__cjsImport2_qs.default : __vite__cjsImport2_qs
+        import qsdef from 'qs'
+        // 正常导入
+        // import __vite__cjsImport3_qs from "/node_modules/.vite/qs.js?v=fc6436e4"; const parse = __vite__cjsImport3_qs["parse"]
+        import { parse } from 'qs'
+
+        console.log(marked);
+    </script> -->
+
+    <script type="module">
+        // 识别动态导入，重写 url 的规则和同步导入相同
+        // import('/test.js')
+        import('./test.js').then((m) => { console.log(m); })
+
+        // import('/src/user.json?import')
+        import('./src/user.json').then((m) => { console.log(m); })
+
+        // import('/@fs/C:/Users/10210/github/liubei/liubei90.github.io/vite/test.js')
+        import('../test.js').then((m) => { console.log(m); })
+
+        // import('/@id/virtual-test')
+        import('virtual-test').then((m) => { console.log(m); })
+
+        // import('/node_modules/.vite/marked.js?v=fc6436e4')
+        import('marked').then((m) => { console.log(m); })
+
+        // import('/node_modules/.vite/qs.js?v=fc6436e4').then(m => m.default && m.default.__esModule ? m.default : ({ ...m.default, default: m.default })).then((m) => { console.log(m); })
+        import('qs').then((m) => { console.log(m); })
+    </script>
+</body>
+</html>
