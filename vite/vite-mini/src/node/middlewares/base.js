@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-16 14:39:11
- * @LastEditTime: 2021-09-16 14:43:04
+ * @LastEditTime: 2021-09-16 14:52:56
  * @Description: 
  */
 import { parse } from 'url';
@@ -26,8 +26,7 @@ export function baseMiddleware({
             Location: base
           });
 
-          res.end();
-          return next();
+          return res.end();
       }
 
       next();

@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-15 17:26:48
- * @LastEditTime: 2021-09-16 14:34:18
+ * @LastEditTime: 2021-09-16 18:15:38
  * @Description: 
  */
 import path from 'path';
@@ -63,7 +63,7 @@ async function devHtmlHook(html, { path: htmlPath, server, originalUrl }) {
     const { config = {} } = server;
     const { base = '/' } = config;
     const s = new MagicString(html);
-    let scriptModuleIndex = 0;
+    let scriptModuleIndex = -1;
 
     traverseHtml(html, htmlPath, function (node) {
         if (node.type !== 1) {
