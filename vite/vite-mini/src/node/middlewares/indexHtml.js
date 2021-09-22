@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-15 17:26:48
- * @LastEditTime: 2021-09-16 18:15:38
+ * @LastEditTime: 2021-09-22 09:56:24
  * @Description: 
  */
 import path from 'path';
@@ -78,7 +78,7 @@ async function devHtmlHook(html, { path: htmlPath, server, originalUrl }) {
             }
 
             if (src) {
-                // 处理脚本的 src 
+                // 处理脚本的 src，加上 base 前缀
                 processNodeUrl(src, s, config);
             } else if (isModule) {
                 // 处理内联脚本，转为 html-proxy

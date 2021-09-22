@@ -13,6 +13,9 @@
   "dependencies": {
     "@vue/compiler-dom": "^3.2.11",
     "connect": "^3.7.0",
-    "magic-string": "^0.25.7"
+    "es-module-lexer": "^0.8.0",
+    "magic-string": "^0.25.7",
+    "marked": "^3.0.4",
+    "sirv": "^1.0.17"
   }
 }

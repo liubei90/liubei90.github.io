@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-14 18:15:00
- * @LastEditTime: 2021-09-16 18:13:16
+ * @LastEditTime: 2021-09-22 10:50:19
  * @Description: 
  */
 import path from 'path';
@@ -10,17 +10,20 @@ import http from 'http';
 
 import { isObject } from './utils.js';
 import { baseMiddleware } from './middlewares/base.js';
+import { serveStaticMiddleware } from './middlewares/static.js';
 import { indexHtmlMiddleware } from './middlewares/indexHtml.js';
 import { transformMiddleware } from './middlewares/transform.js';
 
 import { htmlInlineScriptProxyPlugin } from './plugins/html.js';
 import { resolvePlugin } from './plugins/resolve.js';
+import { importAnalysisPlugin } from './plugins/importAnalysis.js';
 
 async function createServer(config) {
     config.root = path.resolve('./', config.root);
     config.plugins = [
         resolvePlugin(config),
         htmlInlineScriptProxyPlugin(),
+        importAnalysisPlugin(config),
         ...config.plugins,
     ]
 
@@ -65,6 +68,8 @@ async function createServer(config) {
 
     // 处理 req.url 中的 base
     middlewares.use(baseMiddleware(server));
+
+    middlewares.use(serveStaticMiddleware(config.root, config));
 
     // 主要的处理逻辑都在这个中间件执行
     middlewares.use(transformMiddleware(server));
