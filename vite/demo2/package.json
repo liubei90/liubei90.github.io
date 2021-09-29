@@ -1,0 +1,15 @@
+{
+  "name": "demo2",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build:notsc": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "marked": "^3.0.4",
+    "vite": "^2.5.10"
+  },
+  "devDependencies": {}
+}

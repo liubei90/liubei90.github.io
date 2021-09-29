@@ -1,14 +1,14 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-14 18:15:00
- * @LastEditTime: 2021-09-22 10:50:19
+ * @LastEditTime: 2021-09-28 09:02:19
  * @Description: 
  */
 import path from 'path';
 import connect from 'connect';
 import http from 'http';
 
-import { isObject } from './utils.js';
+import { createPluginContainer } from './pluginContainer.js';
 import { baseMiddleware } from './middlewares/base.js';
 import { serveStaticMiddleware } from './middlewares/static.js';
 import { indexHtmlMiddleware } from './middlewares/indexHtml.js';
@@ -40,12 +40,6 @@ async function createServer(config) {
     // 创建模块图，缓存模块
     const moduleGraph = new ModuleGraph(container);
 
-    // middlewares.use(function(req, res, next) {
-    //     res.end('hello, world');
-
-    //     return next();
-    // });
-
     const server = {
         config,
         httpServer,
@@ -69,10 +63,12 @@ async function createServer(config) {
     // 处理 req.url 中的 base
     middlewares.use(baseMiddleware(server));
 
-    middlewares.use(serveStaticMiddleware(config.root, config));
-
+    
     // 主要的处理逻辑都在这个中间件执行
     middlewares.use(transformMiddleware(server));
+
+    // 读取非 html 文件内容
+    middlewares.use(serveStaticMiddleware(config.root, config));
 
     // 处理 html 文件
     middlewares.use(indexHtmlMiddleware(server));
@@ -95,75 +91,7 @@ function startServer(server, port) {
 
 }
 
-async function createPluginContainer(config) {
-    const { plugins, build: { rollupOptions } = {} } = config;
-    return {
-        async buildStart() {
-            // 执行插件中的 buildStart 钩子
-            await Promise.all(
-                plugins.map((plugin) => {
-                    if (plugin.buildStart) {
-                        return plugin.buildStart.call({}, rollupOptions);
-                    };
-                })
-            )
-        },
 
-        async resolveId(rawId, importer) {
-            const res = {};
-            let id = null;
-
-            for (const plugin of plugins) {
-                if (!plugin.resolveId) continue;
-
-                const result = await plugin.resolveId.call({}, rawId, importer);
-
-                if (!result) continue
-
-                id = isObject(result) ? result.id : result;
-
-                break;
-            };
-
-            if (id) {
-                res['id'] = id;
-                return res;
-            }
-
-            return null;
-        },
-
-        async load(id) {
-            for (const plugin of plugins) {
-                if (!plugin.load) continue;
-
-                const result = await plugin.load.call({}, id)
-
-                if (result) return result;
-            }
-
-            return null;
-        },
-
-        async transform(code, id) {
-            for (const plugin of plugins) {
-                if (!plugin.transform) continue;
-
-                const result = await plugin.transform.call({}, code, id);
-
-                if (!result) continue;
-
-                if (isObject(result)) {
-                    code = result.code;
-                } else {
-                    code = result;
-                }
-            }
-
-            return { code };
-        },
-    };
-}
 
 class ModuleGraph {
     async getModuleByUrl() {}

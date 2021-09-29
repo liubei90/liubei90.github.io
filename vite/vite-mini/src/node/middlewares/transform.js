@@ -1,11 +1,12 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-15 17:08:01
- * @LastEditTime: 2021-09-16 17:26:11
+ * @LastEditTime: 2021-09-28 09:56:07
  * @Description: 
  */
+import fs from 'fs';
 
-import { cleanUrl, removeTimestampQuery, isObject } from '../utils.js';
+import { cleanUrl, removeTimestampQuery, isObject, isJSRequest } from '../utils.js';
 import { isHTMLProxy } from '../plugins/html.js';
 
 export function transformMiddleware(server) {
@@ -17,7 +18,8 @@ export function transformMiddleware(server) {
         let url = decodeURI(removeTimestampQuery(req.url));
 
         if (
-            isHTMLProxy(url)
+            isHTMLProxy(url) ||
+            isJSRequest(url)
         ) {
             const result = await transformRequest(url, server);
 
@@ -39,10 +41,17 @@ async function transformRequest(url, server) {
     const resolved = await pluginContainer.resolveId(url);
     const id = resolved && resolved.id || url;
     const file = cleanUrl(id);
+    let code;
 
     // 执行 load 钩子
     const loadResult = await pluginContainer.load(id);
-    let code = isObject(loadResult) ? loadResult.code : loadResult;
+
+    if (loadResult == null) {
+        // 没有钩子处理 load ，在此处直接读取文件内容
+        code = fs.readFileSync(file, { encoding: 'utf-8' });
+    } else {
+        code = isObject(loadResult) ? loadResult.code : loadResult;
+    }
 
     // 执行 transform 钩子
     const transformResult = await pluginContainer.transform(code, id);
