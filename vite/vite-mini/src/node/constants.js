@@ -1,4 +1,7 @@
 import path from 'path'
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 export const DEFAULT_MAIN_FIELDS = [
   'module',
@@ -41,7 +44,7 @@ export const NULL_BYTE_PLACEHOLDER = `__x00__`
 export const CLIENT_PUBLIC_PATH = `/@vite/client`
 export const ENV_PUBLIC_PATH = `/@vite/env`
 // // eslint-disable-next-line node/no-missing-require
-// export const CLIENT_ENTRY = require.resolve('vite/dist/client/client.mjs')
+export const CLIENT_ENTRY = require.resolve('../client/client.mjs')
 // // eslint-disable-next-line node/no-missing-require
 // export const ENV_ENTRY = require.resolve('vite/dist/client/env.mjs')
 // export const CLIENT_DIR = path.dirname(CLIENT_ENTRY)

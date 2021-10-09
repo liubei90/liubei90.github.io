@@ -1,12 +1,14 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-14 18:15:00
- * @LastEditTime: 2021-10-09 09:43:16
+ * @LastEditTime: 2021-10-09 16:47:18
  * @Description: 
  */
 import path from 'path';
 import connect from 'connect';
 import http from 'http';
+
+import { CLIENT_ENTRY } from './constants.js';
 
 import { createPluginContainer } from './pluginContainer.js';
 import { baseMiddleware } from './middlewares/base.js';
@@ -19,6 +21,7 @@ import { htmlInlineScriptProxyPlugin } from './plugins/html.js';
 import { resolvePlugin } from './plugins/resolve.js';
 import { importAnalysisPlugin } from './plugins/importAnalysis.js';
 import { assetPlugin } from './plugins/assets.js';
+import { cssPlugin, cssPostPlugin } from './plugins/css.js';
 
 async function createServer(config) {
     config.root = path.resolve('./', config.root);
@@ -26,6 +29,7 @@ async function createServer(config) {
         // alias 插件
         aliasPlugin({
             entries: [
+                { find: /^[\/]?@vite\/client/, replacement: () => CLIENT_ENTRY },
                 { find: '/@', replacement: path.resolve(config.root, 'example') },
             ]
         }),
@@ -33,6 +37,8 @@ async function createServer(config) {
         htmlInlineScriptProxyPlugin(),
         assetPlugin(config),
         importAnalysisPlugin(config),
+        cssPlugin(config),
+        cssPostPlugin(config),
         ...config.plugins,
     ]
     config.publicDir && (config.publicDir = path.resolve(config.root, config.publicDir));

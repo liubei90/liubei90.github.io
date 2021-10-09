@@ -1,15 +1,15 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-15 17:26:48
- * @LastEditTime: 2021-09-22 09:56:24
+ * @LastEditTime: 2021-10-09 17:04:02
  * @Description: 
  */
 import path from 'path';
 import fs from 'fs';
 import MagicString from 'magic-string';
 import { parse, transform } from '@vue/compiler-dom';
-import { FS_PREFIX } from '../constants.js';
-import { cleanUrl } from '../utils.js';
+import { CLIENT_PUBLIC_PATH, FS_PREFIX } from '../constants.js';
+import { cleanUrl, normalizePath } from '../utils.js';
 
 export const assetAttrsConfig = {
     link: ['href'],
@@ -106,6 +106,9 @@ async function devHtmlHook(html, { path: htmlPath, server, originalUrl }) {
     });
 
     html = s.toString();
+
+    // 向 html 中注入 /@vite/client 脚本
+    html = html.replace(/([ \t]*)<head>/, (match, p1) => `${match}\n<script src="${normalizePath(path.join(base, CLIENT_PUBLIC_PATH))}" type="module"></script>`)
 
     return html;
 }

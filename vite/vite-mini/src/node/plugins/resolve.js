@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-16 17:42:19
- * @LastEditTime: 2021-10-09 11:13:19
+ * @LastEditTime: 2021-10-09 16:28:15
  * @Description: 
  */
 
@@ -36,6 +36,11 @@ export function resolvePlugin(baseOptions) {
                 // const normalizedFsPath = normalizePath(fsPath);
 
                 return fsPath;
+            }
+
+            // 处理真实路径，C://xxx/x.x
+            if (path.isAbsolute(id)) {
+                return id;
             }
 
             // 将裸导入转换为node_modules文件夹路径

@@ -1,12 +1,12 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-15 17:08:01
- * @LastEditTime: 2021-10-09 11:22:29
+ * @LastEditTime: 2021-10-09 16:55:07
  * @Description: 
  */
 import fs from 'fs';
 
-import { cleanUrl, removeTimestampQuery, isObject, isJSRequest, isImportRequest } from '../utils.js';
+import { cleanUrl, removeTimestampQuery, isObject, isJSRequest, isImportRequest, isCSSRequest } from '../utils.js';
 import { isHTMLProxy } from '../plugins/html.js';
 
 export function transformMiddleware(server) {
@@ -20,7 +20,8 @@ export function transformMiddleware(server) {
         if (
             isHTMLProxy(url) ||
             isJSRequest(url) ||
-            isImportRequest(url)
+            isImportRequest(url) ||
+            isCSSRequest(url)
         ) {
             const result = await transformRequest(url, server);
 
