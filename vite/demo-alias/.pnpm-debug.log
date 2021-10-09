@@ -1,0 +1,34 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 debug pnpm:package-manifest": {
+    "initial": {
+      "name": "demo-alias",
+      "version": "1.0.0",
+      "description": "",
+      "main": "index.html",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+      },
+      "keywords": [],
+      "author": "",
+      "license": "ISC"
+    },
+    "prefix": "C:\\Users\\10210\\github\\liubei\\liubei90.github.io\\vite\\demo-alias"
+  },
+  "2 debug pnpm:context": {
+    "currentLockfileExists": false,
+    "storeDir": "C:\\Users\\10210\\.pnpm-store\\v3",
+    "virtualStoreDir": "C:\\Users\\10210\\github\\liubei\\liubei90.github.io\\vite\\demo-alias\\node_modules\\.pnpm"
+  },
+  "3 error pnpm": {
+    "code": "ERR_PNPM_NO_IMPORTER_MANIFEST_FOUND",
+    "err": {
+      "name": "pnpm",
+      "message": "No package.json (or package.yaml, or package.json5) was found in \"C:\\Users\\10210\\github\\liubei\\liubei90.github.io\\vite\\demo-alias\\node_modules\\vite\".",
+      "code": "ERR_PNPM_NO_IMPORTER_MANIFEST_FOUND",
+      "stack": "pnpm: No package.json (or package.yaml, or package.json5) was found in \"C:\\Users\\10210\\github\\liubei\\liubei90.github.io\\vite\\demo-alias\\node_modules\\vite\".\n    at Object.readProjectManifest [as default] (C:\\Users\\10210\\AppData\\Roaming\\npm\\pnpm-global\\5\\node_modules\\.pnpm\\registry.npmmirror.com+pnpm@6.15.2\\node_modules\\pnpm\\dist\\pnpm.cjs:40493:13)\n    at async Object.link (C:\\Users\\10210\\AppData\\Roaming\\npm\\pnpm-global\\5\\node_modules\\.pnpm\\registry.npmmirror.com+pnpm@6.15.2\\node_modules\\pnpm\\dist\\pnpm.cjs:92687:30)\n    at async Object.handler (C:\\Users\\10210\\AppData\\Roaming\\npm\\pnpm-global\\5\\node_modules\\.pnpm\\registry.npmmirror.com+pnpm@6.15.2\\node_modules\\pnpm\\dist\\pnpm.cjs:124798:27)\n    at async C:\\Users\\10210\\AppData\\Roaming\\npm\\pnpm-global\\5\\node_modules\\.pnpm\\registry.npmmirror.com+pnpm@6.15.2\\node_modules\\pnpm\\dist\\pnpm.cjs:133692:20\n    at async run (C:\\Users\\10210\\AppData\\Roaming\\npm\\pnpm-global\\5\\node_modules\\.pnpm\\registry.npmmirror.com+pnpm@6.15.2\\node_modules\\pnpm\\dist\\pnpm.cjs:133667:34)\n    at async runPnpm (C:\\Users\\10210\\AppData\\Roaming\\npm\\pnpm-global\\5\\node_modules\\.pnpm\\registry.npmmirror.com+pnpm@6.15.2\\node_modules\\pnpm\\dist\\pnpm.cjs:133877:5)\n    at async C:\\Users\\10210\\AppData\\Roaming\\npm\\pnpm-global\\5\\node_modules\\.pnpm\\registry.npmmirror.com+pnpm@6.15.2\\node_modules\\pnpm\\dist\\pnpm.cjs:133869:7"
+    }
+  }
+}

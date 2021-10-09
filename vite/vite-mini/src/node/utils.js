@@ -511,3 +511,12 @@ export function arraify(target) {
 
 export const multilineCommentsRE = /\/\*(.|[\r\n])*?\*\//gm
 export const singlelineCommentsRE = /\/\/.*/g
+
+
+
+// css.ts
+const cssLangs = `\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`;
+const cssLangRE = new RegExp(cssLangs);
+
+export const isCSSRequest = (request) =>
+  cssLangRE.test(request);

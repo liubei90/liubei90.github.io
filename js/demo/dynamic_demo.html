@@ -1,0 +1,168 @@
+<!--
+ * @Author: liubei
+ * @Date: 2021-09-30 08:53:31
+ * @LastEditTime: 2021-09-30 15:56:18
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <script src="./dynamic_module_esm.js" type="module"></script> -->
+
+    <script>
+        // 全局作用域，new Function 创建的函数处于该作用域内
+        var a = -100;
+    </script>
+
+    <!-- <script type="module">
+        import { createFunction, createFunction2 } from './dynamic_module_esm.js';
+
+        // esm 也具有模块作用域，new Function 创建的函数获取不到模块内的变量
+        // var a = 0; // Uncaught ReferenceError: a is not defined 
+
+        console.log(createFunction()()); // -100 访问到全局作用域
+        console.log(createFunction2()()); // 200
+    </script> -->
+
+    <!-- <script type="module">
+
+        var a = 50;
+
+        function createFunction() {
+            var a = 100;
+            // Function 构造的对象，其作用域在全局作用域
+            return new Function('return a');
+        }
+
+        function createFunction2() {
+            var a = 200;
+
+            return function () {
+                // 由于词法作用域，当前闭包返回 a 的值为 200
+                return a;
+            }
+        }
+
+        console.log(createFunction()()); // -100 访问到全局作用域
+        console.log(createFunction2()()); // 200
+
+    </script> -->
+
+    <script>
+        // (function() {
+        //     var a = 1;
+        //     (new Function('console.log(a)'))(); // -100
+        // })();
+    </script>
+
+    <script>
+        var b = 2;
+    </script>
+    <div>
+        <!-- https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#inline_event_handlers_%E2%80%94_dont_use_these -->
+        <!-- 使用 Inline event handlers 在标签的 onxxx 属性上设置 js代码，是可以执行的， -->
+        <!-- inline onclick handle -100 -->
+        <button onclick="var b = 200; console.log(a, b);">click me</button>
+        <button id="dynamic-btn">click me 2</button>
+    </div>
+
+    <script>
+        var dynamicBtn = document.getElementById('dynamic-btn');
+
+        dynamicBtn.setAttribute('onclick', "if (true) console.log(b);");
+    </script>
+
+    <script>
+        // (function() {
+        //     var a = 1;
+        //     var s = document.createElement('script');
+    
+        //     s.textContent = "console.log(a)";
+        //     document.documentElement.append(s);
+        // })();
+    </script>
+
+    <div id="dynamic-div"></div>
+
+    <script>
+        // var dynamicDiv = document.getElementById('dynamic-div');
+
+        // // 通过 innerHTML 插入的 script 不执行
+        // dynamicDiv.innerHTML = '<script>console.log("123");</scri'+'pt>';
+    </script>
+
+    <script>
+        // (function () {
+        //     var a = 0;
+
+        //     // setTimeout 执行的代码段，没有自己的作用域，运行在全局作用域中
+        //     var dynameicCode = "console.log('setTimeout', a)";
+        //     setTimeout(dynameicCode, 10); // -100
+
+        //     // setTimeout 执行的代码段，初始化语句会添加变量到 window 上
+        //     var dynameicCode = "var b = 200;";
+        //     setTimeout(dynameicCode, 10);
+        //     setTimeout(function() {
+        //         console.log('window.b', window.b); // window.b 200
+        //     }, 20);
+
+        // })();
+    </script>
+
+    <script>
+        // (function() {
+        //     // eval 没有自己的作用域，使用当前作用域。初始化语句会添加变量到当前作用域上
+        //     var a = 0;
+        //     var dynameicCode = 'console.log("eval", a)';
+        //     eval(dynameicCode);
+
+        //     dynameicCode = 'var b = 20';
+        //     eval(dynameicCode);
+        //     console.log(b, window.b); // 20 undefined
+
+        //     // 使用非 direct call 调用，代码片段将会运行在全局作用域内
+        //     var fn = eval;
+
+        //     dynameicCode = 'console.log("eval", a)';
+        //     fn(dynameicCode);
+
+        //     dynameicCode = 'var c = 30';
+        //     fn(dynameicCode);
+        //     console.log(c, window.c); // 30 30
+        // });
+
+        // // var b = 1;
+        
+        // (function () {
+        //     'use strict'
+
+        //     // 严格模式下，eval 有自己的作用域，父作用域是当前作用域。
+        //     var a = 0;
+        //     var dynameicCode = 'console.log("eval", a)';
+        //     eval(dynameicCode); // 0
+
+        //     // 严格模式下，eval 有自己的作用域，初始化语句将变量添加到自己的作用域内。
+        //     dynameicCode = 'var b = 20';
+        //     eval(dynameicCode);
+        //     // console.log(b); // Uncaught ReferenceError: b is not defined
+
+        //     // 返回 eval 中的闭包
+        //     dynameicCode = 'var b = 20; (function () { return b })';
+        //     var innerb = eval(dynameicCode)();
+        //     console.log('innerb', innerb); // innerb 20
+
+        //     // 使用非 direct call 调用，代码片段的父作用域是全局作用域。
+        //     var fn = eval;
+
+        //     var dynameicCode = 'console.log("eval", a)';
+        //     fn(dynameicCode);
+        // })();
+    </script>
+</body>
+</html>

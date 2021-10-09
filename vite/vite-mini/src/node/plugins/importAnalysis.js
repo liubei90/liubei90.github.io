@@ -1,13 +1,15 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-17 17:05:11
- * @LastEditTime: 2021-09-28 09:51:15
+ * @LastEditTime: 2021-10-09 11:16:06
  * @Description: 
  */
 import path from 'path';
 
 import { init, parse as parseImports } from 'es-module-lexer';
 import MagicString from 'magic-string';
+
+import { isJSRequest, isCSSRequest, injectQuery } from '../utils.js';
 
 
 export function importAnalysisPlugin(config) {
@@ -42,14 +44,21 @@ export function importAnalysisPlugin(config) {
 
                 if (!resolvedRes || !resolvedRes.id) continue;
 
+                let url = resolvedRes.id;
+                let normalizedUrl;
+
                 if (resolvedRes.id.startsWith(root)) {
-                    let specifierUrl = resolvedRes.id.slice(root.length);
+                    url = resolvedRes.id.slice(root.length);
                     // 兼容 window 系统的路径格式
-                    specifierUrl = specifierUrl.replace(/\\/g, '/');
-                    s.overwrite(start, end, specifierUrl);
-                } else {
-                    s.overwrite(start, end, resolvedRes.id);
+                    url = url.replace(/\\/g, '/');
                 }
+
+                // 对非 js/css 导入增加 import 标识
+                if (!isJSRequest(url) && !isCSSRequest(url)) {
+                    url = injectQuery(url, 'import');
+                }
+
+                s.overwrite(start, end, url);
             }
 
             return s.toString();

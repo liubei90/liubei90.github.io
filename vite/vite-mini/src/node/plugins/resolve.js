@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-16 17:42:19
- * @LastEditTime: 2021-09-28 09:51:36
+ * @LastEditTime: 2021-10-09 11:13:19
  * @Description: 
  */
 
@@ -9,7 +9,7 @@ import path from 'path';
 
 import resolve from 'resolve';
 
-import { cleanUrl } from '../utils.js';
+import { cleanUrl, normalizePath } from '../utils.js';
 
 
 export function resolvePlugin(baseOptions) {
@@ -24,11 +24,21 @@ export function resolvePlugin(baseOptions) {
         },
 
         resolveId(id, importer, resolveOpts, ssr) {
+            // 将绝对导入转换为真实路径
             if (id.startsWith('/')) {
                 return path.resolve(root, id.slice(1));
             }
 
-            // 裸导入
+            // 处理相对路径
+            if (id.startsWith('.')) {
+                const basedir = importer ? path.dirname(importer) : process.cwd();
+                const fsPath = path.resolve(basedir, id);
+                // const normalizedFsPath = normalizePath(fsPath);
+
+                return fsPath;
+            }
+
+            // 将裸导入转换为node_modules文件夹路径
             const bareImportRE = /^[\w@](?!.*:\/\/)/;
 
             if (bareImportRE.test(id)) {

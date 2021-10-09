@@ -1,7 +1,7 @@
 <!--
  * @Author: liubei
  * @Date: 2021-09-15 17:48:24
- * @LastEditTime: 2021-10-08 15:11:49
+ * @LastEditTime: 2021-10-08 15:12:02
  * @Description: 
 -->
 <!DOCTYPE html>
@@ -13,15 +13,8 @@
     <title>Document</title>
 </head>
 <body>
-    <div>
-        <!-- 添加 base 前缀 -->
-        <img src="/example/logo.png" alt="" srcset="">
-    </div>
-    <script type="module" src="./example/index.js"></script>
+    <!-- 测试 alias 功能，/@ 指向 /example -->
+    <script type="module" src="/@/index.js"></script>
 
-    <!-- 内联 esm 转换为 html-proxy -->
-    <script type="module">
-        console.log('1');
-    </script>
 </body>
 </html>

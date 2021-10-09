@@ -1,7 +1,7 @@
 <!--
  * @Author: liubei
  * @Date: 2021-09-15 17:48:24
- * @LastEditTime: 2021-10-08 15:11:49
+ * @LastEditTime: 2021-10-09 11:36:41
  * @Description: 
 -->
 <!DOCTYPE html>
@@ -11,17 +11,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/raw.css">
 </head>
 <body>
-    <div>
-        <!-- 添加 base 前缀 -->
-        <img src="/example/logo.png" alt="" srcset="">
-    </div>
-    <script type="module" src="./example/index.js"></script>
-
-    <!-- 内联 esm 转换为 html-proxy -->
+    <img id="assetimg" src="" alt="">
     <script type="module">
-        console.log('1');
+        import logoUrl from './example/logo.png';
+
+        console.log(logoUrl);
+
+        const assetimg = document.getElementById('assetimg');
+
+        assetimg.src = logoUrl;
     </script>
+
 </body>
 </html>

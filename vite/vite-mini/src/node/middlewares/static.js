@@ -1,14 +1,35 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-22 10:19:00
- * @LastEditTime: 2021-09-22 10:52:17
+ * @LastEditTime: 2021-10-08 16:35:46
  * @Description: 
  */
 
 import path from 'path';
 import sirv from 'sirv';
 
-import { cleanUrl } from '../utils.js';
+import { cleanUrl, isImportRequest, isInternalRequest } from '../utils.js';
+
+export function servePublicMiddleware(dir) {
+  const serve = sirv(dir, {
+    dev: true,
+    etag: true,
+    extensions: [],
+    setHeaders(res, pathname) {
+      if (/\.[tj]sx?$/.test(pathname)) {
+        res.setHeader('Content-Type', 'application/javascript')
+      }
+    }
+  })
+
+  return function viteServePublicMiddleware(req, res, next) {
+    if (isImportRequest(req.url) || isInternalRequest(req.url)) {
+      return next()
+    }
+    serve(req, res, next)
+  }
+}
+
 
 export function serveStaticMiddleware( dir, config, ) {
     const serve = sirv(dir, {

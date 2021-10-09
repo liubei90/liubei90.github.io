@@ -1,12 +1,12 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-15 17:08:01
- * @LastEditTime: 2021-09-28 09:56:07
+ * @LastEditTime: 2021-10-09 11:22:29
  * @Description: 
  */
 import fs from 'fs';
 
-import { cleanUrl, removeTimestampQuery, isObject, isJSRequest } from '../utils.js';
+import { cleanUrl, removeTimestampQuery, isObject, isJSRequest, isImportRequest } from '../utils.js';
 import { isHTMLProxy } from '../plugins/html.js';
 
 export function transformMiddleware(server) {
@@ -19,7 +19,8 @@ export function transformMiddleware(server) {
 
         if (
             isHTMLProxy(url) ||
-            isJSRequest(url)
+            isJSRequest(url) ||
+            isImportRequest(url)
         ) {
             const result = await transformRequest(url, server);
 
@@ -40,6 +41,7 @@ async function transformRequest(url, server) {
     // 执行 resolveId 钩子
     const resolved = await pluginContainer.resolveId(url);
     const id = resolved && resolved.id || url;
+    console.log('resolved id:', id);
     const file = cleanUrl(id);
     let code;
 

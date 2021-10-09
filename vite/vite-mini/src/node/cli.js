@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-14 18:15:00
- * @LastEditTime: 2021-09-28 09:02:19
+ * @LastEditTime: 2021-10-09 09:43:16
  * @Description: 
  */
 import path from 'path';
@@ -10,22 +10,32 @@ import http from 'http';
 
 import { createPluginContainer } from './pluginContainer.js';
 import { baseMiddleware } from './middlewares/base.js';
-import { serveStaticMiddleware } from './middlewares/static.js';
+import { serveStaticMiddleware, servePublicMiddleware } from './middlewares/static.js';
 import { indexHtmlMiddleware } from './middlewares/indexHtml.js';
 import { transformMiddleware } from './middlewares/transform.js';
 
+import aliasPlugin from '@rollup/plugin-alias';
 import { htmlInlineScriptProxyPlugin } from './plugins/html.js';
 import { resolvePlugin } from './plugins/resolve.js';
 import { importAnalysisPlugin } from './plugins/importAnalysis.js';
+import { assetPlugin } from './plugins/assets.js';
 
 async function createServer(config) {
     config.root = path.resolve('./', config.root);
     config.plugins = [
+        // alias 插件
+        aliasPlugin({
+            entries: [
+                { find: '/@', replacement: path.resolve(config.root, 'example') },
+            ]
+        }),
         resolvePlugin(config),
         htmlInlineScriptProxyPlugin(),
+        assetPlugin(config),
         importAnalysisPlugin(config),
         ...config.plugins,
     ]
+    config.publicDir && (config.publicDir = path.resolve(config.root, config.publicDir));
 
     console.dir(config, { depth: 10 });
 
@@ -63,7 +73,11 @@ async function createServer(config) {
     // 处理 req.url 中的 base
     middlewares.use(baseMiddleware(server));
 
-    
+    // 读取 publicDir 中的内容，publicDir 中的文件会在构建时原封不动的拷贝到目标文件夹
+    if (config.publicDir) {
+        middlewares.use(servePublicMiddleware(config.publicDir));
+    }
+
     // 主要的处理逻辑都在这个中间件执行
     middlewares.use(transformMiddleware(server));
 
@@ -101,6 +115,7 @@ class ModuleGraph {
     const server = await createServer({
         root: './',
         base: '/foo/',
+        publicDir: './public',
         plugins: [],
         build: {
             rollupOptions: {}

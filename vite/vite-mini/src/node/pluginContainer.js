@@ -1,14 +1,15 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-28 08:44:38
- * @LastEditTime: 2021-09-28 09:50:56
+ * @LastEditTime: 2021-10-08 15:07:30
  * @Description: 
  */
+import path from 'path';
 import { isObject } from './utils.js';
 
 
 export async function createPluginContainer(config) {
-    const { plugins, build: { rollupOptions } = {} } = config;
+    const { plugins, root, build: { rollupOptions } = {} } = config;
 
     class Context {
         async resolve(id, importer, options) {
@@ -29,7 +30,7 @@ export async function createPluginContainer(config) {
             )
         },
 
-        async resolveId(rawId, importer) {
+        async resolveId(rawId, importer = path.join(root, 'index.html')) {
             const res = {};
             let id = null;
 
