@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-15 17:08:01
- * @LastEditTime: 2021-10-09 16:55:07
+ * @LastEditTime: 2021-10-11 14:13:20
  * @Description: 
  */
 import fs from 'fs';
@@ -42,7 +42,7 @@ async function transformRequest(url, server) {
     // 执行 resolveId 钩子
     const resolved = await pluginContainer.resolveId(url);
     const id = resolved && resolved.id || url;
-    console.log('resolved id:', id);
+    console.log(url, ' ---> ', id);
     const file = cleanUrl(id);
     let code;
 

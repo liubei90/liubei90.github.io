@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-14 18:15:00
- * @LastEditTime: 2021-10-09 16:47:18
+ * @LastEditTime: 2021-10-11 09:12:58
  * @Description: 
  */
 import path from 'path';
@@ -22,6 +22,7 @@ import { resolvePlugin } from './plugins/resolve.js';
 import { importAnalysisPlugin } from './plugins/importAnalysis.js';
 import { assetPlugin } from './plugins/assets.js';
 import { cssPlugin, cssPostPlugin } from './plugins/css.js';
+import { esbuildPlugin } from './plugins/esbuild.js';
 
 async function createServer(config) {
     config.root = path.resolve('./', config.root);
@@ -36,6 +37,7 @@ async function createServer(config) {
         resolvePlugin(config),
         htmlInlineScriptProxyPlugin(),
         assetPlugin(config),
+        esbuildPlugin(config),
         importAnalysisPlugin(config),
         cssPlugin(config),
         cssPostPlugin(config),

@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-15 17:26:48
- * @LastEditTime: 2021-10-09 17:04:02
+ * @LastEditTime: 2021-10-11 09:43:59
  * @Description: 
  */
 import path from 'path';
@@ -25,6 +25,7 @@ function getScriptInfo(node) {
     let isModule = false
     for (let i = 0; i < node.props.length; i++) {
         const p = node.props[i]
+        // 6: 节点的属性 ATTRIBUTE
         if (p.type === 6) {
             if (p.name === 'src') {
                 src = p
@@ -66,6 +67,7 @@ async function devHtmlHook(html, { path: htmlPath, server, originalUrl }) {
     let scriptModuleIndex = -1;
 
     traverseHtml(html, htmlPath, function (node) {
+        // // 1: 节点类型是 ELEMENT
         if (node.type !== 1) {
             return;
         }
@@ -96,6 +98,7 @@ async function devHtmlHook(html, { path: htmlPath, server, originalUrl }) {
 
         if (assetAttrs) {
             for (const p of node.props) {
+                // 6: 节点的属性 ATTRIBUTE
                 if (p.type == 6 &&
                     p.value &&
                     assetAttrs.includes(p.name)) {

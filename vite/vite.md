@@ -1,138 +1,85 @@
 # vite 的实现思想
 
-webpack、rollup 等打包工具的工作原理是，构建模块依赖图，将多个模块打包在一个包里发送给浏览器执行。目的是在开发时可以使用 esm 或 cjs 的语法将应用程序拆分到多个模块中，运行时能让传统浏览器正常执行这些模块。当项目中模块数量太大，通过模块依赖图构建整个包就会出现性能瓶颈，导致开发体验特别差。后来引入的 hmr 依然不能彻底解决构建时的性能问题。
+让我们来考虑下，浏览器已经普遍支持 esm 的情况下，为什么还需要 webpack、rollup、vite 这些打包工具。原因是 esm 的功能不满足我们的需求，比如说裸导入、导入 css、tree sharking、typescript、es678 等等。拿 webpack 处理导入css 举例来说，webpack 识别到`import 'raw.css';`这段代码时，会读取 raw.css 样式文件并转换为对应 js 代码。这个 js 文件在浏览器中执行，将 css 样式创建为 style 标签并插入到文档中。如果是 esm 执行到这段代码，会报错说我只想要一个 js 模块脚本，你个的 css 文件我执行不了。
 
-在现代浏览器对 esm 的支持度已经非常高的环境下，vite 放弃实时构建模块依赖图的思路，将这个构建过程做成按需构建的模式。这个按需的底层逻辑是，只有浏览器请求到的模块，才会被构建并加入到模块依赖图中。为什么浏览器支持了 esm，就可以实现按需构建呢？
-
-既然是按需构建，就不会有打包的过程。浏览器直接请求入口文件，执行入口文件的过程中通过网络请求拿到依赖模块。在不支持 esm 的浏览器中，我们可以使用动态创建 script 节点的方式实现。但是我们的代码使用的是 esm 的语法，浏览器如何将 esm 中的 import 转换为可识别的导入语句呢？一种可行的方法是使用 systemjs + systemjs-babel 在浏览器端直接解析 import 为 systemjs 的导入语法。第二种方法是将 import 的解析过程交给开发服务器。这两种情况都需要将同步的 import 转换为异步操作。在 esm 可用的情况下，这种转换过程就不存在了，浏览器能正常实现 import 的同步加载功能。vite 对 esm 的功能做了扩展，使我们的代码和使用 webpack、rollup时保持一致，并且通过和 rollup 的整合，实现对传统浏览器的支持。
-
-这就是 vite 的实现思想，将尽可能多的工作转移到浏览器上执行，并且对开发服务器的解析过程进行优化，达到开发时的极限性能。
+和 webpack、rollup 相比，vite有什么优势呢？在 vite 官网上给的答案是，为了解决开发服务器启动缓慢和热更新缓慢的问题，提升开发效率和开发幸福感！拿 webpack 来说，开发服务器启动时，webpack 会通过入口文件，解析出所有依赖的资源，并执行这些资源的转义操作，构建出整个应用后才能提供服务。当一个项目包含上千个模块时，一次构建出整个应用的模式就遇到性能瓶颈了。vite 的做法是抛弃打包过程，按需构建，前端请求到哪个模块，再去构建这个模块。并且 vite 还使用了 esbuild 和预构建第三方库的优化手段，进一步提升按需构建的速度。
 
 
-# vite 的实现细节
-
-vite 可以作为开发服务器使用，用户在开发时将能体验到 vite 极速的冷启动和 hmr。发布生产时通过预配置 Rullup 打包程序，默认的打包格式是 esm，也可以通过插件生成传统打包格式。vite 的亮点就是作为开发服务器时的极速体验。开发服务器在处理请求时，会模拟 Rollup 的打包过程，并触发同名的钩子，使 Rollup 插件能在开发环境使用（不得不说，vite 这个做法有点厉害，直接省去了插件生态的构建）。下面主要分析下开发服务器的启动流程，服务器加载的各种中间件，插件的执行时机，以及一些重要的插件实现。
+# vite 的实现
 
 ## 开发服务器的启动流程
 
+vite 的开发服务器使用 http + connect 实现，主要代码如下
+```js
+import connect from 'connect';
+import http from 'http';
 
-## 构建模块图
+// 请求中间件
+const middlewares = connect();
+// 开发服务器
+const httpServer = http.createServer(middlewares);
 
-## import
+// 添加各种中间件
+// middlewares.use(xxx);
 
-importAnalysisPlugin 插件使用 es-module-lexer 这个库来解析、识别模块中的 import 语句，通过重写 import 语句实现对 esm 的增强。比如对 import.meta 的扩展。
+// 启动服务器
+httpServer.listen(port, () => {
+    console.log('http://localhost:' + port);
+});
+```
+connect 是一个 node 中间件（middleware）框架，起源与 express。具体用法可以看[这里](https://github.com/senchalabs/connect)。vite 中有几个比较重要的中间件，可以在源码的`src/node/server/middlewares/`目录下找到
 
-### 扩展 import.meta
+### baseMiddleware
+baseMiddleware 用来处理配置项中的 base 选项（开发或生产环境服务的公共基础路径）。我们的代码在部署到生产环境时，一般会部署到某一个特定的目录下，这时访问请求的 url 会带上这个特定目录的前缀，也就是这里的 base 选项。baseMiddleware 会删除 base 前缀。
 
-- import.meta.glob 被转换为模块的动态导入
-  ```js
-    // { "./src/api/article.js": () => import("/src/api/article.js"),}
-    import.meta.glob('./src/api/**/*')
-  ```
-- import.meta.hot 被识别出来，表示该文件为 hmr 边界。在文件头添加如下导入语句，初始化 import.meta.hot 对象
-  ```js
-    // import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/normalize-url.html?html-proxy&index=0.js");
-    import.meta.hot.accept((m) => { console.log(m) });
-  ```
-- import.meta.env 被识别出来，在文件头注入 env 对象
-  ```js
-    // import.meta.env = {"BASE_URL":"/","MODE":"development","DEV":true,"PROD":false,"SSR":false};
-    console.log(import.meta.env);
-  ```
+### servePublicMiddleware
+响应 public 文件夹下的请求。vite 默认会将 public 文件夹下的文件当作项目根目录下的文件，且不做任何转义处理。
 
-### 同步导入模块的 url 重写
-- 导入文件在服务器根目录外部时，url 添加 /@fs/ 前缀。
-  ```js
-    // import { add } from '/@fs/C:/Users/xxx/vite/test.js'
-    import { add } from '../test.js'
-  ```
-- 将 url 转换为就绝对路径
-  ```js
-    // import { add } from '/test.js'
-    import { add } from './test.js'
-  ```
-- 导入非 js 或 css 类型文件时，添加 import 查询参数，为后续处理做标识
-  ```js
-    // import User from '/src/user.json?import'
-    import User from './src/user.json'
-  ```
-- 通过插件实现的虚拟模块，url 添加 /@id/ 前缀
-  ```js
-    // import vt from '/@id/virtual-test'
-    import vt from 'virtual-test'
-  ```
-- 设置 base 为 foo，将处理过的 url 添加 base 前缀
-  ```js
-    // import { add } from '/foo/test.js'
-    import { add } from './test.js'
-  ```
-- 裸导入，将 url 转换为 /node_modules/ 中预构建缓存地址（预构建缓存是否存在不做校验）
-  ```js
-    // 导入 esm
-    // import marked from '/node_modules/.vite/marked.js?v=fc6436e4'
-    import marked from 'marked'
+### transformMiddleware
+transformMiddleware 用来转义处理 js、ts、css、png 等资源文件，这是 vite 最核心的代码实现。在这个中间件中会执行 resolveId、load、transform 这三个钩子函数。如果我们想对代码做些什么，可以通过写插件的方式实现这三个钩子。
 
-    // 导入 cjs
-    // 命名空间导入
-    // import __vite__cjsImport1_qs from "/node_modules/.vite/qs.js?v=fc6436e4"; const qs = __vite__cjsImport1_qs
-    import * as qs from 'qs'
+### serveStaticMiddleware
+serveStaticMiddleware 用来响应不需要转义的的资源文件请求，比如页面中的 img 标签发出的图片请求。
 
-    // default 导入
-    // import __vite__cjsImport2_qs from "/node_modules/.vite/qs.js?v=fc6436e4"; const qsdef = __vite__cjsImport2_qs.__esModule ? __vite__cjsImport2_qs.default : __vite__cjsImport2_qs
-    import qsdef from 'qs'
+### indexHtmlMiddleware
+indexHtmlMiddleware 用来处理 html 文件请求。其内部会调用所有插件的 transformIndexHtml 钩子。vite 内部实现了一个叫 devHtmlHook 的 transformIndexHtml 钩子，用来遍历 html 节点，将元素的 src 属性添加上 base 前缀，将内联脚本转换为网络请求。会被重写的节点属性如下
+```js
+{
+    link: ['href'],
+    video: ['src', 'poster'],
+    source: ['src', 'srcset'],
+    img: ['src', 'srcset'],
+    image: ['xlink:href', 'href'],
+    use: ['xlink:href', 'href']
+}
+```
 
-    // 正常导入
-    // import __vite__cjsImport3_qs from "/node_modules/.vite/qs.js?v=fc6436e4"; const parse = __vite__cjsImport3_qs["parse"]
-    import { parse } from 'qs'
-  ```
+## 几个重要的插件
 
-### 异步导入模块的 url 重写
+vite 的核心功能之一是对 esm 的增强，比如实现裸导入，导入 css 等。这些功能都是通过他的插件实现。transformMiddleware 中间件用来执行resolveId、load、transform 三个插件钩子。具体源码在`src/node/plugins/`文件夹下。
 
-使用 import() 异步导入的模块，url 重写逻辑和同步导入相同
+### importAnalysisPlugin
+importAnalysisPlugin 插件实现了 transform 钩子，当请求的是 js 脚本时，会通过 es-module-lexer 这个库分析出所有 import 语句。如果是裸导入，就分析出这个裸导入真正要导入的文件地址，然后转换为正确的导入 url。这个插件还会对 import.meta 进行增强，实现一些标准没有的功能，比如`import.meta.hot`。
+
+### assetPlugin
+assetPlugin 实现了 load 钩子，让我们可以在代码中通过`import imgUrl from './logo.png';`的方式获得资源的 url。通过 import 导入的 png 图片，服务器不直接返回图片的数据，而是返回一个 js 模块，在模块中通过 `export default ${imgUrl}`的方式导出要请求的图片的 url。
+
+### resolvePlugin
+resolvePlugin 实现了 resolveId 钩子，是一个比较重要的插件，用来转换 url 为真实路径。importAnalysisPlugin 插件中获取裸导入真正的文件地址的功能就是调用了这个插件实现的。
+
+### esbuildPlugin
+esbuildPlugin 实现了 transform 钩子，使用 esbuild 将ts、tsx 转换为 js。
 
 
-##  转换（transformMiddleware）
+## url 中的 query 参数
+vite 会在请求后添加 query 参数的方式，用来标识当前请求的处理逻辑。有些是暴漏给开发者使用，有些是框架内部使用
 
-transformMiddleware 中间件只处理 get 请求，依次执行 resolveId、load 和 transform 三个钩子。主要用来转换请求
+- ?import 用在 js 中导入的静态资源上，防止使用浏览器缓存的静态资源。
+- ?html-proxy 用来标识请求 html 中的内联模块。
+- ?worker 和 ?sharedworker 标识请求是一个 web worker。
+- ?url 用在导入 js 模块时，用来返回 js 模块的真实 url，而不是返回该模块
+- ?raw 用来将资源以纯文本的格式导入
 
+# 总结
 
-## 转换 index.html
-vite 使用 indexHtmlMiddleware 中间件处理 html 文件。包括执行插件中的 transformIndexHtml 钩子，以及内置的 devHtmlHook 函数。devHtmlHook 函数用来重写 html 中资源路径，具体如下：
-
-- script 的 src，以 / 开头的绝对路径，在开头添加 config.base 前缀。以 ./ 开头的相对路径不重写
-- 一些非 script 标签的 src 或 href 属性也会被重写（重写逻辑同 script）
-    ```js
-    {
-        link: ['href'],
-        video: ['src', 'poster'],
-        source: ['src', 'srcset'],
-        img: ['src', 'srcset'],
-        image: ['xlink:href', 'href'],
-        use: ['xlink:href', 'href']
-    }
-    ```
-- type 等于 module 的内联 script，其脚本内容会被移除，src 重写为 `config.base + htmlPath + ?html-proxy&index=${scriptModuleIndex}.js`。script 的内容会在 htmlInlineScriptProxyPlugin 插件处理并返回。
-
-
-## url 后的 query
-- ?import 标识请求是通过 import 发起，需要进行转换。否则从 /public 文件夹读取
-- ?html-proxy&index=1.js 返回 html文件中索引为 1 的内联 script 内的脚本内容
-    这么做的目的，应该是需要对 js 统一处理，所有 js 都需要经过统一的处理中间件。如果还放在 html 中，需要中间件处理 html，增加中间件实现的复杂度
-- ?direct 用在 css 请求中，标识样式不需要预处理器处理
-- ?worker 和 ?sharedworker 标识请求是一个 web worker
-- ?raw 将请求内容作为纯文本导出，类似这样 `export default ${JSON.stringify(fs.readFileSync(file, 'utf-8'))}`。支持导入 /public 文件夹下文件和根目录下文件
-- ?url 将请求 url 转换为 url 导出，类似`export default ${JSON.stringify(url)}`。开发模式下转换后的 url 为绝对路径，且路径和源码中的位置相同。build 模式下，url 转换为打包后的绝对路径。
-
-
-
-## url 重写 与 config.base
-
-config.base 配置会影响 url 重写的策略，且服务器响应重写的 url，需要转换会原始 url。
-
-- 重写 url
-- 服务器中间件会将 req.url 重写，移除 req.url 中的 base。如果是请求 / 或 /index.html，将请求重定向到 base。否则返回 404。
-
-
-## ws 与 hmr
-
-
+这篇文章主要介绍了 vite 源码里比较核心的几个中间件和插件。看起来 vite 只是解决了开发时的效率问题，在构建生产环境代码时，vite 依然选择了使用 rollup 将代码打包。假如 webpack 和 rollup 也像 vite 一样提供按需打包的功能，是否可行呢？vite 的实现模拟了 rollup 的打包过程，在特定时机会调用 rollup 同名的钩子，这样可以复用现存的 rollup 插件。如果 rollup 要实现按需打包功能，肯定也是要兼容本身的插件机制的。假如 webpack 和 rollup 也实现了相同的功能，会不会 vite 突然就不香了呢？

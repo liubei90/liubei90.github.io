@@ -1,7 +1,7 @@
 /*
  * @Author: liubei
  * @Date: 2021-09-17 17:05:11
- * @LastEditTime: 2021-10-09 11:16:06
+ * @LastEditTime: 2021-10-11 14:16:43
  * @Description: 
  */
 import path from 'path';
@@ -53,7 +53,7 @@ export function importAnalysisPlugin(config) {
                     url = url.replace(/\\/g, '/');
                 }
 
-                // 对非 js/css 导入增加 import 标识
+                // 对非 js/css 导入增加 import 标识，用来和正常的资源请求区分开来，防止浏览器使用缓存
                 if (!isJSRequest(url) && !isCSSRequest(url)) {
                     url = injectQuery(url, 'import');
                 }
