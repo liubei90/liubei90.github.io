@@ -1,0 +1,13 @@
+{
+  "sourceMap": false,
+  "noEmit": true,
+  "compilerOptions": {
+    "target": "es6",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./lib/*"],
+    }
+  },
+  "include": ["lib/**/*"],
+  "exclude": ["node_modules"]
+}

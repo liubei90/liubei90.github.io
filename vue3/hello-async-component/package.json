@@ -1,0 +1,14 @@
+{
+  "name": "hello-async-component",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "vite": "^2.6.14",
+    "vue-template-compiler": "^2.6.14"
+  },
+  "devDependencies": {
+    "vite-plugin-vue2": "^1.9.0",
+    "vue": "^2.6.14"
+  }
+}
