@@ -1,0 +1,164 @@
+<!--
+ * @Author: liubei
+ * @Date: 2021-11-27 17:07:40
+ * @LastEditTime: 2021-11-28 18:56:15
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./script.js"></script>
+</head>
+
+<body>
+    <script>
+        (function () {
+            const { Intl, Temporal, toTemporalInstant } = temporal
+
+            // plainDateTimeISO 系统时区\ISO-8601 格式
+            const pdt = Temporal.Now.plainDateTimeISO()
+            console.log(pdt.year)
+            console.log(pdt.toString()) // 2021-11-28T10:18:01.935881934
+            // 对语言敏感的日期和时间格式
+            console.log(pdt.toLocaleString()) // 2021/11/28 上午10:50:10
+            console.log(pdt.toLocaleString('en-US')) // 11/28/2021, 10:50:10 AM
+            console.log(pdt.toLocaleString('ban')) // 2021/11/28 上午10:50:10
+            console.log(pdt.toLocaleString('id')) // 28/11/2021 10.50.10
+            console.log(pdt.toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'long' })) // Sunday, 28 November 2021 at 10:50:10 GMT+8
+            console.log(pdt.calendar.id) // iso8601
+            console.log(pdt.year) // 5782
+            console.log(pdt.month) // 3
+            console.log(pdt.day) // 24
+
+            // hebrew 希伯来历 
+            const pdt2 = Temporal.Now.plainDateTime('hebrew')
+            console.log(pdt2.toString()) // 2021-11-28T11:06:49.722809713[u-ca=hebrew]
+            // console.log(pdt2.toLocaleString()) // Uncaught RangeError: cannot format PlainDateTime with calendar japanese in locale with calendar gregory
+            console.log(pdt2.toLocaleString('en-us', { calendar: pdt2.calendar })) // 24 Kislev 5782, 11:27:26 AM
+            console.log(pdt2.toLocaleString('ja-jp', { calendar: pdt2.calendar })) // AM5782/3/24 11:28:42
+            console.log(pdt2.year) // 5782
+            console.log(pdt2.month) // 3
+            console.log(pdt2.day) // 24
+            console.log(pdt2.calendar.id) // hebrew
+        })
+    </script>
+
+    <script>
+            (function () {
+                // timeZone 时区 Asia/Shanghai
+                const { Intl, Temporal, toTemporalInstant } = temporal
+
+                // // 精确时间 Unix 时间以来的精确时间
+                // const exact = Temporal.Now.instant()
+                // console.log(exact) // { epochMicroseconds: 1638081066192066n
+                // // epochMilliseconds: 1638081066192
+                // // epochNanoseconds: 1638081066192066191n
+                // // epochSeconds: 1638081066 }
+
+                // // 历法 calendar，不同历法中 year month day 的含义不相同，且存在闰月的概念
+                // // 日历日期 使用系统日历 iso8601，无关时区和 unix 时间
+                // const date = Temporal.PlainDate.from({ year: 2021, month: 11, day: 28 });
+                // console.log(date.toString()) // 2021-11-28
+                // console.log(date.calendar.id) // iso8601
+
+                // const date2 = Temporal.PlainDate.from({ year: 5782, month: 3, day: 24, calendar: 'hebrew' });
+                // console.log(date2.toString()) // 2021-11-28[u-ca=hebrew]
+                // console.log(date2.calendar.id) // hebrew
+
+                // // 钟表时间，无关时区和 unix 时间
+                // const time = Temporal.PlainTime.from({
+                //     hour: 19,
+                //     minute: 39,
+                //     second: 9,
+                //     millisecond: 68,
+                //     microsecond: 346,
+                //     nanosecond: 205
+                // });
+
+                // console.log(time.toString()) // 19:39:09.068346205
+
+                // 不包含时区信息的日历日期和钟表时间
+                // PlainDateTime
+
+                // TimeZone 将 UTC 日期/时间转换为本地日期/时间
+                // IANA 时区
+                // UTC 偏移
+                // const tz = Temporal.Now.timeZone()
+                // console.log(tz.id) // Asia/Shanghai
+                // getInstantFor 将 PlainDateTime 转换为 Instant
+                // 使用第一个参数创建一个 PlainDateTime，包含的时区信息被丢弃
+                // console.log(tz.getInstantFor('2021-11-28T12:00:30').toString()) // 2021-11-28T04:00:30Z
+                // console.log(tz.getInstantFor('2021-11-28T12:00:30-0900').toString()) // 2021-11-28T04:00:30Z
+                // console.log(tz.getInstantFor('2021-11-28T12:00:30+0900').toString()) // 2021-11-28T04:00:30Z
+                // // console.log(tz.getInstantFor('2021-11-28T12:00:30Z').toString()) // Uncaught RangeError: Z designator not supported for PlainDateTime
+
+                // getPlainDateTimeFor 将 Instant 转换为 PlainDateTime，第一个参数是 exact time，第二个可选参数是 calendar
+                // console.log(tz.getPlainDateTimeFor('2021-11-28T12:00:30+0800').toString()) // 2021-11-28T12:00:30
+                // console.log(tz.getPlainDateTimeFor('2021-11-28T12:00:30Z').toString()) // 2021-11-28T20:00:30
+                // console.log(tz.getPlainDateTimeFor('2021-11-28T12:00:30Z', 'hebrew').calendar.id) // hebrew
+                // // console.log(tz.getPlainDateTimeFor('2021-11-28T12:00:30Z', 'hebrew').monthsInYear) // 13
+                // console.log(tz.getPlainDateTimeFor('2021-11-28T12:00:30Z', 'hebrew').toLocaleString(undefined, { calendar: 'hebrew' })) // 希伯来历 5782/3/24 下午8:00:30
+
+                // // Calendar 代表一个日历系统
+                // const cal = Temporal.Calendar.from('hebrew')
+                // const cd = cal.dateFromFields({ year: 5782, month: 3, day: 24 })
+                // console.log(cd.toString()) // 2021-11-28[u-ca=hebrew]
+                // console.log(cd.daysInYear) // 384
+                // console.log(cd.monthsInYear) // 13
+                // console.log(cd.daysInMonth) // 30
+
+                // const date2 = new Temporal.PlainDate(2021, 11, 28, 'hebrew' )
+                // console.log(date2.toString()) // 2021-11-28[u-ca=hebrew]
+                // console.log(date2.year) // 5782
+                // console.log(date2.month) // 3
+                // console.log(date2.day) // 24
+                // console.log(date2.calendar.year(date2)) // 5782
+                // console.log(date2.daysInYear) // 384
+                // console.log(date2.monthsInYear) // 13
+                // console.log(date2.daysInMonth) // 30
+
+                const time = new Temporal.PlainTime(2, 30, 0)
+                console.log(time.toString()) // 02:30:00
+                console.log(Temporal.PlainTime.from('2021-11-28T02:30:00').toString()) // 02:30:00
+                // console.log(Temporal.PlainTime.from('2021-11-28T02:30:00Z').toString()) // 02:30:00
+                console.log(Temporal.PlainTime.from('2021-11-28T02:30:00+08:00').toString()) // 02:30:00
+                
+
+                // 字符串语法
+
+            })
+    </script>
+
+    <script>
+            (function () {
+                // 语言环境 locales  toLocaleString(locales, options) locales 语言敏感
+                // 'hi': Hindi 印地语
+                // 'de-AT': 奥地利（地区）使用的德语（语言）
+                // 'zh-Hans-CN': 中国（地区）用简体字（文字）书写的中文（语言）
+                const date = Temporal.PlainDate.from({ year: 2021, month: 11, day: 28 });
+
+                console.log(date.toString()) // 2021-11-28
+                console.log(date.toLocaleString()) // 2021/11/28
+                console.log(date.toLocaleString('zh-Hans-CN')) // 2021/11/28
+                console.log(date.toLocaleString('hi')) // 28/11/2021
+                console.log(date.toLocaleString('de-AT')) // 28.11.2021
+                console.log(date.calendar.id) // iso8601
+
+                // const date2 = Temporal.PlainDate.from({ year: 5780, month: 8, day: 24, calendar: 'hebrew' });
+
+                // console.log(date2.calendar.id) // hebrew
+                // console.log(date2.toString()) // 2020-05-18[u-ca=hebrew]
+                // console.log(date2.toLocaleString(undefined, { calendar: date2.calendar })) // 希伯来历 5780/8/24
+                // console.log(date2.toLocaleString(undefined, { calendar: date2.calendar })) // 希伯来历 5780/8/24
+
+            })()
+    </script>
+
+</body>
+
+</html>
