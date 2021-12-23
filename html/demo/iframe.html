@@ -1,0 +1,35 @@
+<!--
+ * @Author: liubei
+ * @Date: 2021-12-05 20:32:45
+ * @LastEditTime: 2021-12-05 20:44:32
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn">click</button>
+    <iframe id="iframe2" src="./iframe2.html" frameborder="0"></iframe>
+
+    <script>
+        var btn = document.querySelector('#btn')
+        var iframe2 = document.querySelector('#iframe2')
+        var parent = iframe2.parentElement
+
+        btn.addEventListener('click', function() {
+            // iframe2.style.display = iframe2.style.display == 'none' ? '' : 'none'
+            // iframe2.parentNode.removeChild()
+            if (iframe2.parentElement) {
+                iframe2.remove()
+            } else {
+                parent.append(iframe2)
+            }
+        })
+    </script>
+</body>
+</html>
