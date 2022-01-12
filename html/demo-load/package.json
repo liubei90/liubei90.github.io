@@ -1,0 +1,21 @@
+{
+  "name": "demo-load",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon dev.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "body-parser": "^1.19.1",
+    "express": "^4.17.2",
+    "express-ws": "^5.0.2",
+    "nodemon": "^2.0.15",
+    "polka": "^0.5.2",
+    "sirv": "^2.0.0"
+  }
+}
