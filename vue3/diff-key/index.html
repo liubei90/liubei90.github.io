@@ -1,0 +1,39 @@
+<!--
+ * @Author: liubei
+ * @Date: 2022-02-11 16:49:15
+ * @LastEditTime: 2022-02-11 17:02:40
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <div v-for="(item, index) in list" :key="index">{{ index }}  {{ item }}</div>
+        <!-- <div v-for="(item, index) in list" :key="item">{{ index }}  {{ item }}</div> -->
+    </div>
+
+    <script type="module">
+        import {createApp, ref} from 'vue'
+
+        createApp({
+            setup() {
+                const list = ref([1, 2, 3])
+
+                setTimeout(() => {
+                    list.value = [3, 1, 2]
+                }, 20000)
+
+                return {
+                    list,
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
