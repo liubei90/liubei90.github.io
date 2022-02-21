@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<a href="/page1">page1</a>
+<a href="/page2">page2</a>
+<a href="/page3">page3</a>
+<div id="app"></div>
+
+<script>
+    const router = (function Router() {
+        const app = document.querySelector('#app')
+        const routerMap = {
+            '/page1': '页面1',
+            '/page2': '页面2',
+        }
+
+        return {
+            matchUrl: function(url) {
+                // 此处可以做路由拦截器
+                app.innerHTML = routerMap[url] || '404'
+            }
+        }
+    })()
+
+    const myhistory = (function History(router, modal = 'hash') {
+        let currentUrl = '/'
+
+        function getUrl() {
+            let url = ''
+            const location = window.location
+
+            if (modal == 'hash') {
+                url = location.hash.replace('#', '')
+            } else { // history
+                url = location.href.replace(location.origin, '')
+            }
+
+            return url.startsWith('/') ? url : ('/' + url)
+        }
+
+        // 通过url初始化页面
+        function urlChange(e, replace = false, clickModel = false) {
+            console.log('urlChange', e, clickModel)
+            const url = clickModel ? e : getUrl()
+
+            if (currentUrl == url) return
+
+            if (router.matchUrl(url) !== false) {
+                currentUrl = url
+                clickModel && setUrl(url, replace)
+            }
+        }
+
+        urlChange()
+
+        // 绑定事件
+        if (modal == 'hash') {
+            window.addEventListener('hashchange', urlChange)
+        } else {
+            window.addEventListener('popstate', urlChange)
+        }
+
+        function setUrl(url, replace = false) {
+            if (modal == 'hash') {
+                if (replace) {
+                    window.history.go(-1)
+                }
+                window.location.hash = url
+            } else {
+                if (replace) {
+                    window.history.replaceState(null, document.title, url)
+                } else {
+                    window.history.pushState(null, document.title, url)
+                }
+                urlChange()
+            }
+        }
+
+        return {
+            nav: function(url) {
+                urlChange(url, false, true)
+            },
+            replace: function(url) {
+                urlChange(url, true, true)
+            }
+        }
+    })(router, 'hash');
+
+    // 拦截链接的点击事件
+    (function intercept() {
+        document.addEventListener('click', function(e) {
+            if (e.target.nodeName.toLowerCase() == 'a') {
+                e.preventDefault()
+
+                myhistory.nav(e.target.getAttribute('href'))
+            }
+        })
+    })()
+</script>
+</body>
+</html>
