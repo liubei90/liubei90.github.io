@@ -1,0 +1,54 @@
+<!--
+ * @Author: liubei
+ * @Date: 2022-02-16 15:35:06
+ * @LastEditTime: 2022-02-16 16:10:56
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn">click</button>
+    <div id="d"></div>
+    <script>
+        var btn = document.querySelector('#btn')
+        var d = document.querySelector('#d')
+        var count = 1
+
+        function consoleNumber(n) {
+            console.log(n)
+            btn.textContent = 'click' + n
+            // console.log(btn.clientWidth)
+        }
+
+        btn.addEventListener('click', function clickHandler() {
+            console.log('xx')
+            consoleNumber(1)
+        })
+
+        // btn.click()
+        btn.dispatchEvent(new Event('click'))
+        console.log('xx')
+        consoleNumber(2)
+
+        // setInterval(function() {
+        //     d.textContent = count++
+        // }, 0)
+
+        function raf() {
+            requestAnimationFrame(function RafImp() {
+                console.log(1)
+                raf()
+            })
+        }
+
+        raf()
+
+    </script>
+</body>
+</html>
