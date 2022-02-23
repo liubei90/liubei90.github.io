@@ -1,0 +1,67 @@
+<!--
+ * @Author: liubei
+ * @Date: 2022-02-21 10:12:13
+ * @LastEditTime: 2022-02-21 10:36:52
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function extend(d, s) {
+            if (!d) return
+            if (!s) s = {}
+
+            for (prop in s) {
+                d[prop] = s[prop]
+            }
+        }
+
+        function inherit1(init, P, proto) {
+            function Son() {
+                // 继承父类的特权成员
+                P.apply(this, arguments)
+                init.apply(this, arguments)
+            }
+
+            // 子类自己的原型，继承至一个新对象，该对象的原型指向父类
+            Son.prototype = Object.create(P.prototype)
+            Son.prototype.constructor = Son
+
+            // 添加子类特有原型成员
+            extend(Son.prototype, proto)
+            // 继承父类的类成员
+            extend(Son, Parent)
+
+            return Son
+        }
+
+        function Parent() {
+            this.tq = '1'
+        }
+
+        Parent.prototype.yx = '2'
+
+        Parent.lcy = '3'
+
+        var Son = inherit1(function() {
+            this.tq_son = '1s'
+        }, Parent, {
+            yx_son: '2s'
+        })
+
+        var s = new Son()
+
+        console.log(s) // Son
+        console.log(s instanceof Parent) // true
+        console.log(s instanceof Son) // true
+
+    </script>
+</body>
+</html>
