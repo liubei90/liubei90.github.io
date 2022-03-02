@@ -1,0 +1,51 @@
+<!--
+ * @Author: liubei
+ * @Date: 2022-03-02 10:18:34
+ * @LastEditTime: 2022-03-02 10:34:24
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- input checkbox -->
+    <!-- 验证 value 在 checkbox 的作用 -->
+    <input type="checkbox" id="i1"><label for="i1">i1</label>
+    <input type="checkbox" id="i2" value="i2v"><label for="i2">i2</label>
+    <script>
+        var i1 = document.querySelector('#i1')
+        var i2 = document.querySelector('#i2')
+
+        console.log(i1.checked, i1.value) // false 'on'
+        console.log(i2.checked, i2.value) // false 'i2v'
+
+        ;[i1, i2].forEach(function(elm) {
+            elm.addEventListener('change', function(e) {
+                console.log(e.target.checked, e.target.value) // true 'on'  true 'i2v'
+            })
+        });
+    </script>
+
+    <!-- 验证 value 在 radio 中的作用 -->
+    <input type="radio" name="r" id="r1"><label for="r1">r1</label>
+    <input type="radio" name="r" id="r2" value="r2v"><label for="r2">r2</label>
+    <script>
+        var r1 = document.querySelector('#r1')
+        var r2 = document.querySelector('#r2')
+
+        console.log(r1.checked, r1.value) // false 'on'
+        console.log(r2.checked, r2.value) // false 'r2v'
+
+        ;[r1, r2].forEach(function(elm) {
+            elm.addEventListener('change', function(e) {
+                console.log(e.target.checked, e.target.value) // true 'on'  true 'r2v'
+            })
+        });
+    </script>
+</body>
+</html>
