@@ -1,0 +1,36 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\10210\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js init
+
+PATH: 
+  C:\Users\10210\Documents\PowerShell\Modules\oh-my-posh;C:\Program Files\PowerShell\7;C:\Python310\Scripts\;C:\Python310\;C:\dev\python27_\;C:\dev\python27_\Scripts;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\dev\curl-7.75.0-win64-mingw;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\Git\cmd;C:\Program Files\TortoiseSVN\bin;C:\Program Files\PowerShell\7\;C:\ProgramData\chocolatey\bin;;C:\Program Files (x86)\Tencent\微信web开发者工具\dll;C:\Program Files\nodejs\;C:\dev\python27\;C:\dev\python27\Scripts;C:\Users\10210\AppData\Local\Programs\Python\Python39\;C:\Users\10210\AppData\Local\Programs\Python\Python39\Scripts\;C:\Program Files\MySQL\MySQL Server 8.0\bin\;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Program Files\Git\usr\bin;C:\dev\nginx-1.18.0;C:\dev\curl-7.75.0-win64-mingw;C:\Users\10210\AppData\Local\Microsoft\WindowsApps;C:\Users\10210\AppData\Local\GitHubDesktop\bin;$env:POSH_PATH;C:\Users\10210\AppData\Roaming\npm
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  14.18.3
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: canceled
+      at Interface.<anonymous> (C:\Users\10210\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:136216:13)
+      at Interface.emit (events.js:400:28)
+      at Interface._ttyWrite (readline.js:1001:16)
+      at ReadStream.onkeypress (readline.js:265:10)
+      at ReadStream.emit (events.js:400:28)
+      at emitKeys (internal/readline/utils.js:358:14)
+      at emitKeys.next (<anonymous>)
+      at ReadStream.onData (readline.js:1270:36)
+      at ReadStream.emit (events.js:400:28)
+      at addChunk (internal/streams/readable.js:293:12)
+
+npm manifest: 
+  No manifest
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
