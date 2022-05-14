@@ -1,0 +1,39 @@
+<!--
+ * @Author: liubei
+ * @Date: 2022-03-02 10:18:34
+ * @LastEditTime: 2022-03-02 10:34:24
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 验证设置 value 后，input 是否能编辑 -->
+    <input id="ip1" type="text" value="在原始页面中能编辑">
+
+    <script>
+        const ip1 =  document.querySelector('#ip1');
+
+        ip1.addEventListener('change', function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            e.stopPropagation();
+            ip1.value = '在原始页面中能编辑';
+            return false;
+        })
+
+        ip1.addEventListener('input', function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            e.stopPropagation();
+            ip1.value = '在原始页面中能编辑';
+            return false;
+        })
+    </script>
+</body>
+</html>
