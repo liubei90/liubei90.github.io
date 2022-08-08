@@ -4,7 +4,7 @@
     "connect": "^3.7.0",
     "es-module-lexer": "^0.9.0",
     "magic-string": "^0.25.7",
-    "marked": "^3.0.4",
+    "marked": "^4.0.10",
     "resolve": "^1.20.0",
     "sirv": "^1.0.17",
     "vite": "^2.6.0-beta.3"
