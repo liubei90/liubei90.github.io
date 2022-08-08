@@ -1,0 +1,145 @@
+{
+  "main": {
+    "id": "b3b4630cf1f5915b",
+    "type": "split",
+    "children": [
+      {
+        "id": "96595050a9a320cc",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "react/覆盖 antd 默认样式.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "a6fa7ca0b6ac2330",
+    "type": "split",
+    "children": [
+      {
+        "id": "1865487c2d053d1f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e48f7f296d354382",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "9dca6fb1fa5cb067",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:#react使用/",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "f76a098c168d98c5",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "85674b444d550f07",
+    "type": "split",
+    "children": [
+      {
+        "id": "e13404c66e16f50e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "50b7777138f8a1ea",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "react/覆盖 antd 默认样式.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": false
+              }
+            }
+          },
+          {
+            "id": "863ba15296401d59",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "react/覆盖 antd 默认样式.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "9d9f4f1debb98741",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "48cb64a9e0b50c92",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "react/覆盖 antd 默认样式.md"
+              }
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 330.5,
+    "collapsed": true
+  },
+  "active": "96595050a9a320cc",
+  "lastOpenFiles": [
+    "images/antd-theme.png",
+    "react/覆盖 antd 默认样式.md",
+    "react/antd 使用.md",
+    "react/Form 表单.md",
+    "组件/less.md",
+    "react/函数入参设置默认值.md",
+    "react/react 函数组件.md",
+    "2022-08-05.md",
+    "Untitled 1.md",
+    "Untitled 5.md"
+  ]
+}
