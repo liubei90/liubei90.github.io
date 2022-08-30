@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "vite": "^2.6.14",
+    "vite": "^2.9.13",
     "vue": "^2.6.14",
     "vue-template-compiler": "^2.6.14"
   },
